@@ -7,9 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 
 import fr.rubyz.bos.utils.Cuboid;
+import org.bukkit.inventory.ItemStack;
 
 public class Team {
 
@@ -37,7 +39,7 @@ public class Team {
 		this.diamondIndicator = new DiamondIndicator(this , armorStandLoc);
 		
 		this.base = new Cuboid(loc1, loc2);
-		
+
 	}
 
 	/**
@@ -75,6 +77,61 @@ public class Team {
 		}
 		
 		return team;
+	}
+
+	/**
+	 * Count and refresh the number of diamonds in the team's chest
+	 */
+	public void refreshDiamondCount(){
+
+		Block chestBlock = this.getChest();
+
+		if(chestBlock.getType().equals(Material.CHEST)){
+
+			Chest chest = (Chest) chestBlock.getState();
+
+			int diamondsAmout = 0;
+			ItemStack[] items = chest.getInventory().getContents();
+
+			for(ItemStack item : items){
+				if(item != null){
+					if(item.getType().equals(Material.DIAMOND)){
+						diamondsAmout += item.getAmount();
+					}
+				}
+			}
+
+			this.setDiamonds(diamondsAmout);
+
+		}else{
+			System.out.println("§cError : The " + this.getName() + " team's chest is not correctly defined.");
+		}
+
+	}
+
+	// TODO : Check if the function needs a return statement
+	/**
+	 * Sort the list (ASC)
+	 * @param list List to sort
+	 */
+	public static ArrayList<Team> sortTeamList(ArrayList<Team> list){
+
+		for(int k = 1; k < list.size()-1; k++) {
+
+			for (int i = 0; i < list.size() - k; i++) {
+
+				if(list.get(i).getDiamonds() > list.get(i+1).getDiamonds()){
+					Team tmp = list.get(i);
+					list.set(i, list.get(i+1));
+					list.set(i+1, tmp);
+				}
+
+			}
+
+		}
+
+		return list;
+
 	}
 
 	/**

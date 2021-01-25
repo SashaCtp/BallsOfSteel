@@ -11,13 +11,13 @@ public class GametimeCommand implements CommandExecutor{
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		
+
 		if(sender instanceof Player){
-		
+
 			Player p = (Player) sender;
-				
+
 			if(p.isOp()){
-					
+
 				if(args.length == 2){
 					
 					int time = 60;
@@ -43,11 +43,11 @@ public class GametimeCommand implements CommandExecutor{
 					}
 						
 				}else{
-					p.sendMessage("§cUSage : /gametime <action> <time>");
+					p.sendMessage("§cUsage : /gametime <action> <time>");
 				}
 					
 			}else{
-				p.sendMessage("§cVous n'avez pas les permissions nécessaires !");
+				p.sendMessage("§cYou do not have the permission !");
 			}
 		
 		}

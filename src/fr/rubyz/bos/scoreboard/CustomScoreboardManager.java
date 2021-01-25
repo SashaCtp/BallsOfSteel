@@ -39,19 +39,19 @@ public class CustomScoreboardManager implements ScoreboardManager{
 	}
 	
 	public void refresh(){
-		for(String ligne : scoreboard.getEntries()){
+		for(String line : scoreboard.getEntries()){
 			
-			if(ligne.contains("§7Remaining Time : ")){
-				scoreboard.resetScores(ligne);
-				String lastligne = ligne.split(" : ")[0];
-				String date = new SimpleDateFormat("mm:ss").format(new Date(BallsOfSteel.remainingTime*1000));
+			if(line.contains("§7Remaining Time : ")){
+				scoreboard.resetScores(line);
+				String lastligne = line.split(" : ")[0];
+				String date = new SimpleDateFormat("mm:ss").format(new Date((long) BallsOfSteel.remainingTime*1000));
 				String newligne = lastligne + " : " + date;
 				objective.getScore(newligne).setScore(2);
 			}
 			
-			if(ligne.contains(" diamonds") || ligne.contains(" diamond")){
+			if(line.contains(" diamonds") || line.contains(" diamond")){
 				
-				scoreboard.resetScores(ligne);
+				scoreboard.resetScores(line);
 				Team t = BallsOfSteel.getPlayerTeam(p);
 				if(t.getDiamonds() <= 1)
 					objective.getScore("§b" + t.getDiamonds() + " diamond").setScore(4);
@@ -65,13 +65,13 @@ public class CustomScoreboardManager implements ScoreboardManager{
 	
 	public void sendLine(){
 		
-		if(GameState.isState(GameState.LOBBY)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			objective.getScore(" ").setScore(3);
 			objective.getScore("§7Waiting for players").setScore(2);
 			objective.getScore("  ").setScore(1);
 		}
 		
-		if(GameState.isState(GameState.GAME)){	
+		if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			scoreboard.resetScores("§7Waiting for players");
 			Team t = BallsOfSteel.getPlayerTeam(p);
 			
@@ -84,7 +84,7 @@ public class CustomScoreboardManager implements ScoreboardManager{
 				objective.getScore("§b" + t.getDiamonds() + " diamonds").setScore(4);
 			
 			objective.getScore("  ").setScore(3);
-			String date = new SimpleDateFormat("mm:ss").format(new Date(BallsOfSteel.remainingTime*1000));
+			String date = new SimpleDateFormat("mm:ss").format(new Date((long) BallsOfSteel.remainingTime*1000));
 			objective.getScore("§7Remaining Time : "+date).setScore(2);
 			objective.getScore("   ").setScore(1);
 		}

@@ -42,10 +42,10 @@ public class DiamondIndicator {
 	
 	public void update(){
 		if(this.isSpawned){
-			if(team.getDiamonds() <= 1)
-				this.armorStand.setCustomName(team.getColor() + team.getDiamonds() + " diamond in the chest");
+			if(this.team.getDiamonds() <= 1)
+				this.armorStand.setCustomName(this.team.getColor() + this.team.getDiamonds() + " diamond in the chest");
 			else
-				this.armorStand.setCustomName(team.getColor() + team.getDiamonds() + " diamonds in the chest");
+				this.armorStand.setCustomName(this.team.getColor() + this.team.getDiamonds() + " diamonds in the chest");
 		}
 	}
 	

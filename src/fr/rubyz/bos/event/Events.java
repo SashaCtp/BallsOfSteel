@@ -33,11 +33,11 @@ public class Events implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if((GameState.isState(GameState.LOBBY) || GameState.isState(GameState.FINISH)) && p.getFoodLevel() < 20)
+		if((BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.FINISH)) && p.getFoodLevel() < 20)
 			p.setFoodLevel(20);
 			
 		if(p.getLocation().getX() > -197 || p.getLocation().getY() < 0 || p.getLocation().getY() > 216 || p.getLocation().getX() < -227 || p.getLocation().getZ() > 589 || p.getLocation().getZ() < 559){
-			if(GameState.isState(GameState.LOBBY)){
+			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 				p.teleport(BallsOfSteel.getSpawn());
 				p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
 			}
@@ -52,11 +52,11 @@ public class Events implements Listener {
 		if(ent instanceof Player){
 			
 			Player p = (Player) e.getEntity();
-			if(GameState.isState(GameState.LOBBY) || GameState.isState(GameState.FINISH)){
+			if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.FINISH)){
 				e.setCancelled(true);
 			}
 			
-			if(GameState.isState(GameState.GAME)){
+			if(BallsOfSteel.gameState.equals(GameState.GAME)){
 				if(BallsOfSteel.getPlayerTeam(p).getBase().contains(p.getLocation())){
 					e.setCancelled(true);
 				}
@@ -68,7 +68,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent e){
 		
-		if(GameState.isState(GameState.LOBBY)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			
 			e.setCancelled(true);
 			
@@ -89,14 +89,14 @@ public class Events implements Listener {
 				e.getCurrentItem().getType().equals(Material.YELLOW_TERRACOTTA) ||
 				e.getCurrentItem().getType().equals(Material.BLUE_TERRACOTTA)){
 				
-				if(GameState.isState(GameState.LOBBY)){
+				if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 					e.setCancelled(true);
 				}
 				
 			}
 			
 			if(e.getCurrentItem().getType().equals(BallsOfSteel.gameConfig.getBuildBlockMaterial())){
-				if(GameState.isState(GameState.GAME)){
+				if(BallsOfSteel.gameState.equals(GameState.GAME)){
 					if(BallsOfSteel.gameConfig.isInfiniteBuildBlock()){
 						if(e.getCurrentItem().getItemMeta().getDisplayName().equals("§oInfinite block")){
 							e.setCancelled(true);
@@ -118,7 +118,7 @@ public class Events implements Listener {
 		if(b.getLocation().getX() <= -196 && b.getLocation().getX() >= -228){
 			if(b.getLocation().getY() <= 70 && b.getLocation().getY() >= 56){
 				if(b.getLocation().getZ() <= 590 && b.getLocation().getBlockZ() >= 558){
-					if(BallsOfSteel.gameConfig.isMidProtected() || BallsOfSteel.gameConfig.isHost() == false)
+					if(BallsOfSteel.gameConfig.isMidProtected() || !BallsOfSteel.gameConfig.isHost())
 						e.setCancelled(true);
 				}
 			}
@@ -145,13 +145,13 @@ public class Events implements Listener {
 	public void onBlockBreakEvent(BlockBreakEvent e){
 		Block b = e.getBlock();
 		
-		if(!GameState.isState(GameState.GAME))
+		if(!BallsOfSteel.gameState.equals(GameState.GAME))
 			e.setCancelled(true);
 			
 		if(b.getLocation().getX() <= -196 && b.getLocation().getX() >= -228){
 			if(b.getLocation().getY() <= 70 && b.getLocation().getY() >= 56){
 				if(b.getLocation().getZ() <= 590 && b.getLocation().getBlockZ() >= 558){
-					if(BallsOfSteel.gameConfig.isMidProtected() || BallsOfSteel.gameConfig.isHost() == false)
+					if(BallsOfSteel.gameConfig.isMidProtected() || !BallsOfSteel.gameConfig.isHost())
 						e.setCancelled(true);
 				}
 			}
@@ -166,13 +166,11 @@ public class Events implements Listener {
 		}
 		
 		if(b.getType().equals(Material.DIAMOND_ORE)){
-			UUID uuid = e.getPlayer().getUniqueId();
+
+			BallsOfSteel.gameStats.addDiamondMined(e.getPlayer());
 			
-			BallsOfSteel.diamondsMined.put(uuid, BallsOfSteel.diamondsMined.get(uuid)+1);
-			int diamondsMined = BallsOfSteel.diamondsMined.get(uuid);
-			
-			if(diamondsMined%5 == 0){
-				Bukkit.getPlayer(uuid).sendMessage("§b+0.5 coins §9(5 Diamonds Mined)");
+			if(BallsOfSteel.gameStats.getPlayerDiamondsMined(e.getPlayer())%5 == 0){
+				e.getPlayer().sendMessage("§b+0.5 coins §9(5 Diamonds Mined)");
 			}
 		}
 		
@@ -189,7 +187,7 @@ public class Events implements Listener {
 			if(BallsOfSteel.getPlayerTeam(p) == BallsOfSteel.getPlayerTeam(damager))
 				e.setCancelled(true);
 			
-			if(GameState.isState(GameState.GAME)){
+			if(BallsOfSteel.gameState.equals(GameState.GAME)){
 				if(BallsOfSteel.getPlayerTeam(p).getBase().contains(p.getLocation())){
 					e.setCancelled(true);
 				}

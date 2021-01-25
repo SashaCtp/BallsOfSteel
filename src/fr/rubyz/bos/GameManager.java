@@ -23,13 +23,11 @@ import fr.rubyz.bos.scoreboard.CustomScoreboardManager;
 import fr.rubyz.bos.utils.Util;
 
 public class GameManager {
-	
-	static GameConfiguration gameConfig = BallsOfSteel.gameConfig;
-	static ArrayList<Team> teams = BallsOfSteel.teams;
 
-	//Function to start the game
+	// Function to start the game
 	public static void start(){
-		GameState.setState(GameState.GAME);
+
+		BallsOfSteel.gameState = GameState.GAME;
 		
 		ArrayList<Player> noTeam = new ArrayList<>();
 		for(Player pls : Bukkit.getOnlinePlayers()){
@@ -40,7 +38,7 @@ public class GameManager {
 			}
 		}
 		
-		for(Team t : teams){
+		for(Team t : BallsOfSteel.teams){
 			for(Iterator<Player> it = noTeam.iterator(); it.hasNext();){
 				
 				Player pls = it.next();
@@ -52,27 +50,18 @@ public class GameManager {
 					pls.sendMessage(Util.getGamePrefix() + "You've just join " + t.getColor() + t.getName() + " team §f !");
 				}
 			}
-		}
-		
-		for(Team t : teams){
+
 			t.getDiamondIndicator().spawn();
 			t.teleportPlayers();
 		}
 		
 		for(Player p : Bukkit.getOnlinePlayers()){
-			if(!BallsOfSteel.spectator.contains(p)){
-				BallsOfSteel.kills.put(p.getUniqueId(), 0);
-				BallsOfSteel.death.put(p.getUniqueId(), 0);
-				BallsOfSteel.diamondsMined.put(p.getUniqueId(), 0);
-			}
+
+			if(!BallsOfSteel.spectator.contains(p))
+				BallsOfSteel.gameStats.initCounters(p);
+
 		}
-		
-		for(Entry<Player, CustomScoreboardManager> scoreboard : BallsOfSteel.getInstance().sb.entrySet()){
-			CustomScoreboardManager board = scoreboard.getValue();
-			board.sendLine();
-			board.refresh();
-		}
-		
+
 		for(Player pls : Bukkit.getOnlinePlayers()){
 			pls.getInventory().clear();
 			giveStuff(pls);
@@ -84,6 +73,14 @@ public class GameManager {
 			Util.updateTab();
 		}
 		
+		for(Entry<Player, CustomScoreboardManager> scoreboard : BallsOfSteel.getInstance().sb.entrySet()){
+			CustomScoreboardManager board = scoreboard.getValue();
+			board.sendLine();
+			board.refresh();
+		}
+
+		// Display informations
+		
 		Bukkit.broadcastMessage("§a--------------------------------");
 		Bukkit.broadcastMessage("  §bTips : §7Global chat : §l@§7Your message");
 		Bukkit.broadcastMessage("§a--------------------------------");
@@ -91,45 +88,29 @@ public class GameManager {
 		
 		String space = "       ";
 		
-		if(gameConfig.isHost())Bukkit.broadcastMessage(space + "§7- Version Host");
-		if(gameConfig.isMidProtected())Bukkit.broadcastMessage(space + "§7- Protection du Mid active");
-		if(gameConfig.isInfiniteBuildBlock())Bukkit.broadcastMessage(space + "§7- Blocs infinis");
-		Bukkit.broadcastMessage(space + "§7- Default block : " + gameConfig.getBuildBlockMaterial().name());
+		if(BallsOfSteel.gameConfig.isHost())Bukkit.broadcastMessage(space + "§7- Version Host");
+		if(BallsOfSteel.gameConfig.isMidProtected())Bukkit.broadcastMessage(space + "§7- Protection du Mid active");
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())Bukkit.broadcastMessage(space + "§7- Blocs infinis");
+		Bukkit.broadcastMessage(space + "§7- Default block : " + BallsOfSteel.gameConfig.getBuildBlockMaterial().name());
 		Bukkit.broadcastMessage("                            ");
-		Bukkit.broadcastMessage("           §6§lGood luck and have fun !");
+		Bukkit.broadcastMessage(space + "§6§lGood luck everyone and have fun !");
 		
 	}
 	
 	//Function top stop (end) the game
 	public static void stop(){
-		GameState.setState(GameState.FINISH);
+
+		BallsOfSteel.gameState = GameState.FINISH;
+
 		Bukkit.broadcastMessage(Util.getGamePrefix() + "End of the match !");
 		for(Player pls : Bukkit.getOnlinePlayers()){
 			pls.sendTitle("§cEnd of the match !", "", 1, 70, 1);
 		}
-		
-		//Make the classement
-		final ArrayList<Team> first = new ArrayList<Team>();
-		ArrayList<Team> second = new ArrayList<Team>();
-		ArrayList<Team> third = new ArrayList<Team>();
-		ArrayList<Team> forth = new ArrayList<Team>();
-		
-		//Get the first team(s)
-		for(int i = 0; i<BallsOfSteel.teams.size(); i++) {
-		    Team t = BallsOfSteel.teams.get(i);
-		    
-		    int diamonds = t.getDiamonds();
-		    
-		    if(i == 0){
-		    	first.add(t);
-		    }else{
-		    	if(first.size() == 0){
-		    		
-		    	}
-		    }
-		    
-		}
-		
+
+		//Make the ranks
+		ArrayList<Team> ranking = Team.sortTeamList(BallsOfSteel.teams);
+
+		Team first = ranking.get(ranking.size()-1);
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(BallsOfSteel.getInstance(), new Runnable(){
 
@@ -138,7 +119,7 @@ public class GameManager {
 			
 			Random r = new Random();
 			
-			for(Team team : teams){
+			for(Team team : BallsOfSteel.teams){
 				Location chestLoc = team.getChest().getLocation();
 				
 				Location loc = new Location(Bukkit.getWorld("world"), chestLoc.getX() + 0.5, chestLoc.getY() + 1, chestLoc.getZ() + 0.5);
@@ -163,18 +144,11 @@ public class GameManager {
 			}
 			
 		}, 0, 20L);
-		
+
 		for(Player pls : Bukkit.getOnlinePlayers()){
 			
-			pls.sendMessage("§a------------- §9§lBalls Of Steel §a-------------");
-			pls.sendMessage("     §7- Kills : §6" + BallsOfSteel.kills.get(pls.getUniqueId()));
-			pls.sendMessage("     §7- Death : §c" + BallsOfSteel.death.get(pls.getUniqueId()));
-			pls.sendMessage("     §7- Diamonds mined : §b" + BallsOfSteel.diamondsMined.get(pls.getUniqueId()));
+			BallsOfSteel.gameStats.displayPlayerStats(pls, pls);
 			
-		}
-		
-		for(Player pls : first.get(0).getPlayers()){
-			pls.sendMessage("§c+ 20 Rubyz §o(Victory)");
 		}
 		
 		//Kick the players at the end of the game then restart
@@ -184,7 +158,7 @@ public class GameManager {
 			public void run() {
 				
 				for(Player pls : Bukkit.getOnlinePlayers()){
-					pls.kickPlayer("§f§lEnd of the match ! \n \n§7" + first.get(0).getColor() + first.get(0).getName() + " team§7 won ! \n \n §oServer is restarting ...");
+					pls.kickPlayer("§f§lEnd of the match ! \n \n§7" + first.getColor() + first.getName() + " team§7 won ! \n \n §oServer is restarting ...");
 				}
 				
 				Bukkit.getScheduler().runTaskLater(BallsOfSteel.getInstance(), new Runnable(){
@@ -202,14 +176,14 @@ public class GameManager {
 	//Give the stuff to the player
 	public static void giveStuff(final Player p){
 		
-		Material mat = gameConfig.getBuildBlockMaterial();
+		Material mat = BallsOfSteel.gameConfig.getBuildBlockMaterial();
 		
 		p.getInventory().setItem(1, Util.make(Material.IRON_SWORD, 1, null, Arrays.asList("§7  Default Sword")));
 		p.getInventory().setItem(4, Util.make(Material.IRON_PICKAXE, 1, null, null));
 		p.getInventory().setItem(5, Util.make(Material.IRON_SHOVEL, 1, null, null));
 		p.getInventory().setItem(6, Util.make(Material.IRON_AXE, 1, null, null));
 		
-		if(gameConfig.isInfiniteBuildBlock()){
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock()){
 			p.getInventory().setItem(0, Util.make(mat, 1, "§oInfinite block", null));
 		}else{
 			p.getInventory().setItem(0, Util.make(mat, 64, "Construction block", null));
@@ -243,7 +217,6 @@ public class GameManager {
 		String playerTeamColor = BallsOfSteel.getPlayerTeam(p).getColor();
 
 		switch(playerTeamColor) {
-
 			case "§1":
 				color = Color.fromRGB(0,0,170);
 			case "§9":
@@ -266,7 +239,6 @@ public class GameManager {
 	    LeatherArmorMeta lhelmetmeta = (LeatherArmorMeta)lhelmet.getItemMeta();
 	    assert lhelmetmeta != null;
 	    lhelmetmeta.setDisplayName("Default armor");
-
 	    lhelmetmeta.setColor(color);
 	    lhelmet.setItemMeta(lhelmetmeta);
 	    

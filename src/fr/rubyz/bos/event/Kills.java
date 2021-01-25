@@ -11,19 +11,12 @@ public class Kills implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent e) {
-		Player p = e.getEntity();
 
-		int death = BallsOfSteel.death.get(p.getUniqueId());
-		BallsOfSteel.death.put(p.getUniqueId(), death + 1);
+		BallsOfSteel.gameStats.addDeath(e.getEntity());
 
 		if (e.getEntity().getKiller() != null) {
 
-			if (e.getEntity().getKiller() instanceof Player) {
-
-				Player killer = (Player) e.getEntity().getKiller();
-
-				BallsOfSteel.kills.put(killer.getUniqueId(), BallsOfSteel.kills.get(killer) + 1);
-			}
+			BallsOfSteel.gameStats.addKill(e.getEntity().getKiller());
 
 		}
 

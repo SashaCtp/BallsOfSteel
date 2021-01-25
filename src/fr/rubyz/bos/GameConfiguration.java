@@ -70,7 +70,7 @@ public class GameConfiguration {
 		
 	}
 
-	//Getters et setters � ne pas toucher
+	//Getters et setters
 	
 	public boolean isMidProtected(){
 		return midProtection;

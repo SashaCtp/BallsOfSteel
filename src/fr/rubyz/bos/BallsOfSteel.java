@@ -1,11 +1,9 @@
 package fr.rubyz.bos;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
+import com.sk89q.worldedit.bukkit.BukkitItemCategoryRegistry;
 import fr.rubyz.bos.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -14,11 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
@@ -42,16 +36,13 @@ public class BallsOfSteel extends JavaPlugin{
 	public static GameConfiguration gameConfig;
 
 	public static GameStats gameStats;
+	public static GameState gameState;
 	
 	public static ArrayList<Player> spectator = new ArrayList<>();
 	public static ArrayList<Team> teams = new ArrayList<>();
 	public static ArrayList<PotionEffect> effectList = new ArrayList<PotionEffect>();
 	
 	public HashMap<Player, CustomScoreboardManager> sb = new HashMap<>();
-	
-	public static HashMap<UUID, Integer> kills = new HashMap<>();
-	public static HashMap<UUID, Integer> death = new HashMap<>();
-	public static HashMap<UUID, Integer> diamondsMined = new HashMap<>();
 	
 	public static int gameMaxplayers;
 	public static int clockTask;
@@ -61,18 +52,19 @@ public class BallsOfSteel extends JavaPlugin{
 	public void onEnable(){
 		
 		//Start message
-		Bukkit.broadcastMessage("-----------------------------");
-		Bukkit.broadcastMessage(Util.getGamePrefix() + "§7Starting BallsOfSteel Spigot plugin by Mega (§3§o@MegaSash§7)");
-		Bukkit.broadcastMessage("§7Get sourcecode on github : §8§ohttps://github.com/MegaSash/BallsOfSteel");
-		Bukkit.broadcastMessage("-----------------------------");
+		Bukkit.getConsoleSender().sendMessage("-----------------------------");
+		Bukkit.getConsoleSender().sendMessage(Util.getGamePrefix() + "§7Starting BallsOfSteel Spigot plugin by Mega (§3§o@MegaSash§7)");
+		Bukkit.getConsoleSender().sendMessage("§7Get sourcecode on github : §8§ohttps://github.com/SashaCtp/BallsOfSteel");
+		Bukkit.getConsoleSender().sendMessage("-----------------------------");
 		
 		instance = this;
-		
+
 		World w = Bukkit.getWorlds().get(0);
-		
+
 		EventManager.registerEvents(this);
-		GameState.setState(GameState.LOBBY);
-		
+
+		gameStats = new GameStats();
+		gameState = GameState.LOBBY;
 		spawn = new Location(w, -211.5, 212.8, 574.5, 0, 0);
 		
 		//Config files
@@ -88,38 +80,38 @@ public class BallsOfSteel extends JavaPlugin{
 		gameMaxplayers = gameConfig.getTeamsize()*4;
 		remainingTime = gameConfig.getTime()*60;
 		
-		Bukkit.broadcastMessage(Util.getGamePrefix() + "Variables : ");
-		Bukkit.broadcastMessage("                  " + "Host : " + gameConfig.isHost());
-		Bukkit.broadcastMessage("                  " + "Team size : " + gameConfig.getTeamsize() + " players");
-		Bukkit.broadcastMessage("                  " + "Match lenght : " + gameConfig.getTime() + " minuts");
-		Bukkit.broadcastMessage("                  " + "Infinite blocks : " + gameConfig.isInfiniteBuildBlock());
-		Bukkit.broadcastMessage("-----------------------------");
-		
+		Bukkit.getConsoleSender().sendMessage(Util.getGamePrefix() + "Variables : ");
+		Bukkit.getConsoleSender().sendMessage("                  " + "Host : " + gameConfig.isHost());
+		Bukkit.getConsoleSender().sendMessage("                  " + "Team size : " + gameConfig.getTeamsize() + " players");
+		Bukkit.getConsoleSender().sendMessage("                  " + "Match lenght : " + gameConfig.getTime() + " minuts");
+		Bukkit.getConsoleSender().sendMessage("                  " + "Infinite blocks : " + gameConfig.isInfiniteBuildBlock());
+		Bukkit.getConsoleSender().sendMessage("-----------------------------");
+
 		//Commands
-		getCommand("gametime").setExecutor(new GametimeCommand());
-		getCommand("param").setExecutor(new ParamCommand());
-		getCommand("start").setExecutor(new StartCommand());
-		getCommand("stats").setExecutor(new StatsCommand());
-		getCommand("debug").setExecutor(new DebugCommand());
+		Objects.requireNonNull(getCommand("gametime")).setExecutor(new GametimeCommand());
+		Objects.requireNonNull(getCommand("param")).setExecutor(new ParamCommand());
+		Objects.requireNonNull(getCommand("start")).setExecutor(new StartCommand());
+		Objects.requireNonNull(getCommand("stats")).setExecutor(new StatsCommand());
+		Objects.requireNonNull(getCommand("debug")).setExecutor(new DebugCommand());
 
 		//Team creation
 		try{
 			int teamMaxplayers = gameConfig.getTeamsize();
 			
 			Block redChest = w.getBlockAt(new Location(w, -212, 58, 577));
-			red = new Team("Red", new ArrayList<UUID>(), teamMaxplayers, new Location(w, -303, 70.3, 666, -90, 0), redChest, new Location(w, -303, 72-0.7, 672.5), "§c", Material.RED_TERRACOTTA, new Location(w, -299, 61, 661), new Location(w, -312, 80, 674));
+			red = new Team("Red", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 70.3, 666, -90, 0), redChest, new Location(w, -303, 72-0.7, 672.5), "§c", Material.RED_TERRACOTTA, new Location(w, -299, 61, 661), new Location(w, -312, 80, 674));
 			teams.add(red);
 			
 			Block blueChest = w.getBlockAt(new Location(w, -212, 58, 571));
-			blue = new Team("Blue", new ArrayList<UUID>(), teamMaxplayers, new Location(w, -120, 71.3, 483), blueChest, new Location(w, -120, 73-0.7, 476.5), "§3", Material.BLUE_TERRACOTTA, new Location(w, -125, 62, 487), new Location(w, -112, 81, 474));
+			blue = new Team("Blue", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 71.3, 483), blueChest, new Location(w, -120, 73-0.7, 476.5), "§3", Material.BLUE_TERRACOTTA, new Location(w, -125, 62, 487), new Location(w, -112, 81, 474));
 			teams.add(blue);
 			
 			Block yellowChest = w.getBlockAt(new Location(w, -209, 58, 574));
-			yellow = new Team("Yellow", new ArrayList<UUID>(), teamMaxplayers, new Location(w, -120, 70.3, 666, 180, 0), yellowChest, new Location(w, -113.5, 72-0.7, 666), "§e", Material.YELLOW_TERRACOTTA, new Location(w, -125, 61, 661), new Location(w, -112, 80, 684));
+			yellow = new Team("Yellow", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 70.3, 666, 180, 0), yellowChest, new Location(w, -113.5, 72-0.7, 666), "§e", Material.YELLOW_TERRACOTTA, new Location(w, -125, 61, 661), new Location(w, -112, 80, 684));
 			teams.add(yellow);
 			
 			Block greenChest = w.getBlockAt(new Location(w, -215, 58, 574));
-			green = new Team("Green", new ArrayList<UUID>(), teamMaxplayers, new Location(w, -303, 72.3, 483), greenChest, new Location(w, -309.5, 74-0.7, 483), "§a", Material.GREEN_TERRACOTTA, new Location(w, -299, 63, 487), new Location(w, -312, 82, 474));
+			green = new Team("Green", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 72.3, 483), greenChest, new Location(w, -309.5, 74-0.7, 483), "§a", Material.GREEN_TERRACOTTA, new Location(w, -299, 63, 487), new Location(w, -312, 82, 474));
 			teams.add(green);
 			
 			Bukkit.broadcastMessage(Util.getGamePrefix() + "Teams :");
@@ -131,34 +123,33 @@ public class BallsOfSteel extends JavaPlugin{
 			e.printStackTrace();
 		}
 
-		//Stats
-		gameStats = new GameStats();
-
 		Util.updateTab();
 		
 		Bukkit.getWorlds().get(0).setAutoSave(false);
-		
+
 		//Runnable
 		new GameRunnable().runTaskTimer(this, 0L, 20L);
+
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			@Override
+			public void run() {
+
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule keepInventory false");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule announceAdvancements false");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule spectatorsGenerateChunks false");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
+
+			}
+		}, 10);
 		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "gamerule keepInventory false");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-off");
-		
-		Bukkit.broadcastMessage(Util.getGamePrefix() + "§aThe plugin started without any error !");
-		
+		Bukkit.getConsoleSender().sendMessage(Util.getGamePrefix() + "§aThe plugin started without any error !");
+
 	}
 	
 	@Override
 	public void onDisable(){
 		for(Player pls : Bukkit.getOnlinePlayers()){
 			pls.kickPlayer(Util.getGamePrefix() + "\n §a§lReload");
-		}
-		
-		//Kill des ArmorStand
-		for(Entity ent : Bukkit.getWorlds().get(0).getEntities()){
-			if(ent instanceof ArmorStand || ent instanceof Item || ent instanceof Arrow){
-				ent.remove();
-			}
 		}
 		
 		for(Player pls : Bukkit.getOnlinePlayers()){
@@ -169,6 +160,8 @@ public class BallsOfSteel extends JavaPlugin{
 		}
 		
 		for(Team t : teams){
+			t.getDiamondIndicator().remove();
+
 			Chest teamChest = (Chest) t.getChest().getState();
 			teamChest.getInventory().clear();
 			t.getDiamondIndicator().remove();
@@ -176,10 +169,13 @@ public class BallsOfSteel extends JavaPlugin{
 		
 		for(World worlds : Bukkit.getWorlds()){
 			File folder = new File(worlds.getWorldFolder(), "playerdata");
-			for(File files : folder.listFiles()){
+			for(File files : Objects.requireNonNull(folder.listFiles())){
 				files.delete();
 			}
 		}
+
+		//Stats
+		gameStats = null;
 	}
 	
 	public static void setSpectatorMode(Player p){
@@ -187,7 +183,10 @@ public class BallsOfSteel extends JavaPlugin{
 		
 		p.setGameMode(GameMode.SPECTATOR);
 		p.sendMessage(Util.getGamePrefix() + "You are now a spectator !");
-		if(!Team.allTeamFull())p.sendMessage(Util.getGamePrefix() + "Open your inventory to join a team !");
+		if(!Team.allTeamFull())
+			p.sendMessage(Util.getGamePrefix() + "Open your inventory to join a team !");
+
+		//Teleporting the spectator to a random player in the game
 		int random = new Random().nextInt(Bukkit.getServer().getOnlinePlayers().size());
 		Player p1 = (Player) Bukkit.getServer().getOnlinePlayers().toArray()[random];
 		p.teleport(p1);

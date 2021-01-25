@@ -22,45 +22,19 @@ public class GameRunnable extends BukkitRunnable{
 	
 	@Override
 	public void run() {
-		
-		//Count the number of diamonds in every chest
-		for(Team t : BallsOfSteel.teams){
-			Block chestBlock = t.getChest();
-			
-			if(chestBlock.getType().equals(Material.CHEST)){
-				
-				Chest chest = (Chest) chestBlock.getState();
-				
-				int diamondsAmout = 0;
-				ItemStack[] items = chest.getInventory().getContents();
-				
-				for(ItemStack item : items){
-					if(item != null){
-						if(item.getType().equals(Material.DIAMOND)){
-							diamondsAmout += item.getAmount();
-						}
-					}
-				}
-				
-				t.setDiamonds(diamondsAmout);
-				
-			}else{
-				System.out.println("§cError : The " + t.getName() + " team's chest is not correctly defined.");
-			}
-			
-		}
-		
-		
-		//Refreshing the scoreboard
+
+		// Refreshing the scoreboard
 		for(Entry<Player, CustomScoreboardManager> scoreboard : BallsOfSteel.getInstance().sb.entrySet()){
 			CustomScoreboardManager board = scoreboard.getValue();
 			board.refresh();
 		}
 		
-		//Updating the Tab, Diamonds Indicator & remaining time
-		if(GameState.isState(GameState.GAME)){
+		// Updating the Tab, Diamonds Indicator & remaining time
+		if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			Util.updateTab();
+
 			for(Team t : BallsOfSteel.teams){
+				t.refreshDiamondCount();
 				t.getDiamondIndicator().update();
 			}
 			

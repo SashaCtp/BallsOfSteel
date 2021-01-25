@@ -13,7 +13,7 @@ public class Cuboid {
 	
 	/*
 	 * Variables "1" are always the biggest
-	 * and the "2" are the smaler
+	 * and the "2" are the smaller
 	 */
 	
 	public Cuboid(Location loc1, Location loc2){

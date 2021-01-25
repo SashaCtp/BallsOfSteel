@@ -24,7 +24,7 @@ public class ParamCommand implements CommandExecutor{
 					
 				if(BallsOfSteel.instance.getGameConfig().isHost()){
 					
-					if(GameState.isState(GameState.LOBBY)){
+					if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 						ParamInventory.openParamInventory(0, p);
 					}else{
 						p.sendMessage(Util.getGamePrefix() + "It's to late for it !");
@@ -34,7 +34,7 @@ public class ParamCommand implements CommandExecutor{
 				}
 					
 			}else{
-				p.sendMessage("§cYou don't have the permission !");
+				p.sendMessage("§cYou do not have the permission !");
 			}
 			
 		}
