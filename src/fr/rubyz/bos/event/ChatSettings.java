@@ -20,7 +20,7 @@ public class ChatSettings implements Listener{
 		
 		String message = e.getMessage();
 		
-		if(GameState.isState(GameState.LOBBY)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			String color = "";
 			if(BallsOfSteel.getPlayerTeam(p) != null){
 				color = BallsOfSteel.getPlayerTeam(p).getColor();

@@ -39,7 +39,7 @@ public class JoinAndQuit implements Listener{
 			p.removePotionEffect (effect.getType());
 		}
 		
-		if(GameState.isState(GameState.LOBBY)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			
 			e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7 join the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
 			
@@ -58,7 +58,7 @@ public class JoinAndQuit implements Listener{
 			
 			BallsOfSteel.getInstance().lobbyMenu(p);
 
-		}else if(GameState.isState(GameState.GAME)){
+		}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			Team playerTeam = BallsOfSteel.getPlayerTeam(p);
 			
 			if(playerTeam != null){			
@@ -75,7 +75,7 @@ public class JoinAndQuit implements Listener{
 				//Set the player in spectator mod
 				BallsOfSteel.setSpectatorMode(p);				
 			}
-		}else if(GameState.isState(GameState.FINISH)){
+		}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
 			e.setJoinMessage("");
 			p.kickPlayer("§c§lThe game is finish ! ! \n \n §fplay.rubyzgames.fr");
 		}
@@ -93,9 +93,9 @@ public class JoinAndQuit implements Listener{
 		}
 		
 		Util.updateTab();
-		if(GameState.isState(GameState.LOBBY) || GameState.isState(GameState.GAME)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.GAME)){
 			e.setQuitMessage(Util.getGamePrefix() + p.getName() + " §7leave the game ! " + "§c(" + (Bukkit.getOnlinePlayers().size()-1) + "/" + BallsOfSteel.gameMaxplayers + ")");
-		}else if(GameState.isState(GameState.FINISH)){
+		}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
 			e.setQuitMessage("");
 		}
 		p.getInventory().clear();
@@ -103,7 +103,7 @@ public class JoinAndQuit implements Listener{
 		
 		//Clearing the team
 		if(BallsOfSteel.getPlayerTeam(p) != null){
-			if(GameState.isState(GameState.LOBBY)){
+			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 				BallsOfSteel.getPlayerTeam(p).removePlayer(p);
 				for(Player pls : Bukkit.getOnlinePlayers()){
 					BallsOfSteel.getInstance().lobbyMenu(pls);

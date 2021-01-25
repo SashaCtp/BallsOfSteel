@@ -87,9 +87,9 @@ public class Util {
 		
 		for(Player pls : Bukkit.getOnlinePlayers()){
 		
-			if(GameState.isState(GameState.LOBBY)){
+			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 				state = "Waiting for players - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs";
-			}else if(GameState.isState(GameState.GAME)){
+			}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
 				if(BallsOfSteel.getPlayerTeam(pls) != null){
 					if(BallsOfSteel.getPlayerTeam(pls).getDiamonds() <= 1){
 						state = "In game - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs - " + BallsOfSteel.getPlayerTeam(pls).getColor() + BallsOfSteel.getPlayerTeam(pls).getDiamonds() + " diamond";

@@ -22,7 +22,7 @@ public class PlayerInteract implements Listener{
 		
 		Player p = e.getPlayer();
 		
-		if(GameState.isState(GameState.LOBBY)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				
 				Material mat = p.getInventory().getItemInMainHand().getType();
@@ -77,7 +77,7 @@ public class PlayerInteract implements Listener{
 					}
 				}
 				
-				if(GameState.isState(GameState.GAME)){
+				if(BallsOfSteel.gameState.equals(GameState.GAME)){
 					for(Team t : BallsOfSteel.teams){
 						if(t.getBase().contains(block.getLocation())){
 							if(!t.getPlayers().contains(p)){
