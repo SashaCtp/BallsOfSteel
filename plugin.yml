@@ -3,7 +3,7 @@ site: sashactp.fr
 name: BallsOfSteel
 main: fr.rubyz.bos.BallsOfSteel
 version: 0.1
-api-version: 1.13
+api-version: 1.16
 commands:
   start:
     usage: /start
@@ -14,6 +14,9 @@ commands:
   gametime:
     usage: /gametime <action> <int>
     description: Edit the time of the game (add/remove/set)
+  stats:
+    usage: /stats [player]
+    description: Display the user statistics (self if no playername given)
   debug:
     usage: /debug
     description: Only for debug purpose

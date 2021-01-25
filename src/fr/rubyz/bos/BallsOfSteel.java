@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
+import fr.rubyz.bos.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,10 +22,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
-import fr.rubyz.bos.commands.DebugCommand;
-import fr.rubyz.bos.commands.GametimeCommand;
-import fr.rubyz.bos.commands.ParamCommand;
-import fr.rubyz.bos.commands.StartCommand;
 import fr.rubyz.bos.event.EventManager;
 import fr.rubyz.bos.scoreboard.CustomScoreboardManager;
 import fr.rubyz.bos.utils.GameRunnable;
@@ -43,6 +40,8 @@ public class BallsOfSteel extends JavaPlugin{
 	private static Location spawn;
 	
 	public static GameConfiguration gameConfig;
+
+	public static GameStats gameStats;
 	
 	public static ArrayList<Player> spectator = new ArrayList<>();
 	public static ArrayList<Team> teams = new ArrayList<>();
@@ -100,6 +99,7 @@ public class BallsOfSteel extends JavaPlugin{
 		getCommand("gametime").setExecutor(new GametimeCommand());
 		getCommand("param").setExecutor(new ParamCommand());
 		getCommand("start").setExecutor(new StartCommand());
+		getCommand("stats").setExecutor(new StatsCommand());
 		getCommand("debug").setExecutor(new DebugCommand());
 
 		//Team creation
@@ -130,7 +130,10 @@ public class BallsOfSteel extends JavaPlugin{
 			Bukkit.broadcastMessage("§c[ERROR] Error while creating the team /!\\ Check the console");
 			e.printStackTrace();
 		}
-		
+
+		//Stats
+		gameStats = new GameStats();
+
 		Util.updateTab();
 		
 		Bukkit.getWorlds().get(0).setAutoSave(false);
