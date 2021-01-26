@@ -6,12 +6,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +16,7 @@ import org.bukkit.potion.PotionEffect;
 
 import fr.rubyz.bos.scoreboard.CustomScoreboardManager;
 import fr.rubyz.bos.utils.Util;
+import org.bukkit.util.Vector;
 
 public class GameManager {
 
@@ -98,68 +94,65 @@ public class GameManager {
 	}
 	
 	//Function top stop (end) the game
-	public static void stop(){
+	public static void stop() {
 
 		BallsOfSteel.gameState = GameState.FINISH;
 
 		Bukkit.broadcastMessage(Util.getGamePrefix() + "End of the match !");
-		for(Player pls : Bukkit.getOnlinePlayers()){
-			pls.sendTitle("§cEnd of the match !", "", 1, 70, 1);
+
+		// Check if the match is a draw
+		boolean draw = isGameDraw();
+
+		Team winningTeam = null;
+		final String kickMessage;
+		if (!draw){
+			ArrayList<Team> ranking = Team.sortTeamList(BallsOfSteel.teams);
+			winningTeam = ranking.get(ranking.size() - 1);
+			kickMessage = "§f§lEnd of the match ! \n \n§7" + winningTeam.getColor() + winningTeam.getName() + " team§7 won ! §6Congratulations !\n \n §oThe server is now restarting ...";
+			Bukkit.broadcastMessage(winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !");
+		}else {
+			kickMessage = "§f§lEnd of the match ! \n \n§7It's a draw !\n \n §oThe server is now restarting ...";
+			Bukkit.broadcastMessage("§7It's a draw !");
 		}
 
-		//Make the ranks
-		ArrayList<Team> ranking = Team.sortTeamList(BallsOfSteel.teams);
+		// On affiche les effets aux joueurs
+		for (Player pls : Bukkit.getOnlinePlayers()) {
 
-		Team first = ranking.get(ranking.size()-1);
-		
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(BallsOfSteel.getInstance(), new Runnable(){
+			if(winningTeam != null && winningTeam.getPlayers().contains(pls))
+				pls.sendTitle("§2§lVictory !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 70, 1);
+			else if(winningTeam != null)
+				pls.sendTitle("§4§lDefeat !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 70, 1);
+			else
+				pls.sendTitle("§7§lDraw !", "§7Nobody won the game !", 1, 70, 1);
 
-			@Override
-			public void run() {
-			
-			Random r = new Random();
-			
-			for(Team team : BallsOfSteel.teams){
-				Location chestLoc = team.getChest().getLocation();
-				
-				Location loc = new Location(Bukkit.getWorld("world"), chestLoc.getX() + 0.5, chestLoc.getY() + 1, chestLoc.getZ() + 0.5);
-				
-				Firework firework1 = (Firework)loc.getWorld().spawn(loc, Firework.class);
-				FireworkEffect effect1 = FireworkEffect.builder()
-					.withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.flicker(true)
-					.withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
-					.with(FireworkEffect.Type.BURST)
-					.build();
-					FireworkMeta meta1 = firework1.getFireworkMeta();
-					meta1.addEffect(effect1);
-					meta1.setPower(1);
-					firework1.setFireworkMeta(meta1);
-				
-				}
-			}
-			
-		}, 0, 20L);
 
-		for(Player pls : Bukkit.getOnlinePlayers()){
-			
+			pls.playSound(pls.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 0.7F, 1F);
+
+			// Effet d'envol
+			pls.setAllowFlight(true);
+			pls.setFlying(true);
+
+			Vector v = new Vector();
+			v.setX(pls.getVelocity().getX());
+			v.setY(3);
+			v.setZ(pls.getVelocity().getZ());
+
+			pls.setVelocity(v);
+
+			// On affiche les statistiques du joueur
 			BallsOfSteel.gameStats.displayPlayerStats(pls, pls);
-			
 		}
-		
-		//Kick the players at the end of the game then restart
+
+		launchEndFireworks(winningTeam);
+
+		// Kick the players at the end of the game then restart
 		Bukkit.getScheduler().scheduleSyncDelayedTask(BallsOfSteel.getInstance(), new Runnable(){
 
 			@Override
 			public void run() {
 				
-				for(Player pls : Bukkit.getOnlinePlayers()){
-					pls.kickPlayer("§f§lEnd of the match ! \n \n§7" + first.getColor() + first.getName() + " team§7 won ! \n \n §oServer is restarting ...");
-				}
+				for(Player pls : Bukkit.getOnlinePlayers())
+					pls.kickPlayer(kickMessage);
 				
 				Bukkit.getScheduler().runTaskLater(BallsOfSteel.getInstance(), new Runnable(){
 
@@ -169,8 +162,64 @@ public class GameManager {
 					}}, 30L);
 				}
 			
-		}, 200L);
+		}, 20L*30);
 		
+	}
+
+	/**
+	 * Launch the fireworks at the end of the game
+	 * @param winningTeam 	The team which won the game
+	 */
+	public static void launchEndFireworks(Team winningTeam){
+
+		final Team wt = winningTeam;
+
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BallsOfSteel.getInstance(), new Runnable(){
+
+			@Override
+			public void run() {
+
+				for(Team team : BallsOfSteel.teams){
+					Location chestLoc = team.getChest().getLocation();
+
+					Location loc = new Location(Bukkit.getWorld("world"), chestLoc.getX() + 0.5, chestLoc.getY() + 1, chestLoc.getZ() + 0.5);
+
+					Util.spawnFirework(loc);
+
+					if(wt != null){
+
+						for(Player pls : wt.getPlayers()){
+
+							if(pls.isOnline())
+								Util.spawnFirework(pls.getLocation());
+
+						}
+
+					}
+
+				}
+			}
+
+		}, 0, 20L);
+
+	}
+
+	/**
+	 * Checks if there is a draw
+	 * Only when the game is finished
+	 */
+	public static boolean isGameDraw(){
+
+		if(!BallsOfSteel.gameState.equals(GameState.FINISH))
+			return false;
+
+		for(int i = 0; i < BallsOfSteel.teams.size()-1; i++){
+			if (BallsOfSteel.teams.get(i).getDiamonds() != BallsOfSteel.teams.get(i+1).getDiamonds())
+				return false;
+		}
+
+		return true;
+
 	}
 	
 	//Give the stuff to the player

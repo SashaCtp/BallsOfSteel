@@ -1,14 +1,17 @@
 package fr.rubyz.bos.utils;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import fr.rubyz.bos.BallsOfSteel;
@@ -114,5 +117,31 @@ public class Util {
 		}
 		
 	}
+
+    /**
+     * Spawn a firework on the given location
+     * @param loc Location of the firework
+     */
+    public static void spawnFirework(Location loc){
+
+        Random r = new Random();
+
+        Firework firework1 = (Firework) Objects.requireNonNull(loc.getWorld()).spawn(loc, Firework.class);
+        FireworkEffect effect1 = FireworkEffect.builder()
+                .withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .withColor(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .flicker(true)
+                .withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .withFade(Color.fromRGB(r.nextInt(255), r.nextInt(255), r.nextInt(255)))
+                .with(FireworkEffect.Type.BURST)
+                .build();
+        FireworkMeta meta1 = firework1.getFireworkMeta();
+        meta1.addEffect(effect1);
+        meta1.setPower(1);
+        firework1.setFireworkMeta(meta1);
+
+    }
 	
 }
