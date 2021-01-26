@@ -161,6 +161,21 @@ public class Team {
 	}
 
 	/**
+	 * Get the team of player (null if in no team)
+	 * @param p Player
+	 */
+	public static Team getTeamOfPlayer(Player p){
+
+		for(Team t : BallsOfSteel.teams) {
+			if (t.getPlayers().contains(p))
+				return t;
+		}
+
+		return null;
+
+	}
+
+	/**
 	 * Add a player to the team
 	 * @param p Player to add
 	 */
