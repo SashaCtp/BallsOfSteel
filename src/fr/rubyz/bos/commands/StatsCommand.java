@@ -18,7 +18,7 @@ public class StatsCommand implements CommandExecutor {
         // Display the sender's statistics
         if(args.length == 0){
 
-            if(sender instanceof Player){
+            if(!(sender instanceof Player)){
                 sender.sendMessage("§cThe console is not a player !");
                 return false;
             }
