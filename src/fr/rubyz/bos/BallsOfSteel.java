@@ -88,9 +88,7 @@ public class BallsOfSteel extends JavaPlugin{
 		Bukkit.getConsoleSender().sendMessage("-----------------------------");
 
 		//Commands
-		Objects.requireNonNull(getCommand("gametime")).setExecutor(new GametimeCommand());
-		Objects.requireNonNull(getCommand("param")).setExecutor(new ParamCommand());
-		Objects.requireNonNull(getCommand("start")).setExecutor(new StartCommand());
+		Objects.requireNonNull(getCommand("game")).setExecutor(new GameCommand());
 		Objects.requireNonNull(getCommand("stats")).setExecutor(new StatsCommand());
 		Objects.requireNonNull(getCommand("debug")).setExecutor(new DebugCommand());
 

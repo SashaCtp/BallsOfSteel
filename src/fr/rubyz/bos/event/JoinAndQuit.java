@@ -41,7 +41,7 @@ public class JoinAndQuit implements Listener{
 		
 		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 			
-			e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7 join the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
+			e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7joined the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
 			
 			Util.updateTab();
 			
@@ -61,23 +61,21 @@ public class JoinAndQuit implements Listener{
 		}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			Team playerTeam = BallsOfSteel.getPlayerTeam(p);
 			
-			if(playerTeam != null){			
-				e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7 join the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
-				
+			if(playerTeam != null){
+				e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7joined the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
+
 				Util.updateTab();
-				
-				if(playerTeam != null){
-					p.teleport(playerTeam.getSpawn());
-					GameManager.giveStuff(p);
-					p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
-				}
+				GameManager.giveStuff(p);
+
+				p.teleport(playerTeam.getSpawn());
+				p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 			}else{
 				//Set the player in spectator mod
-				BallsOfSteel.setSpectatorMode(p);				
+				BallsOfSteel.setSpectatorMode(p);
 			}
 		}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
 			e.setJoinMessage("");
-			p.kickPlayer("§c§lThe game is finish ! ! \n \n §fplay.rubyzgames.fr");
+			p.kickPlayer("§c§lEnd of the game ! \n \n §fplay.rubyzgames.fr");
 		}
 		
 	}
@@ -94,7 +92,7 @@ public class JoinAndQuit implements Listener{
 		
 		Util.updateTab();
 		if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.GAME)){
-			e.setQuitMessage(Util.getGamePrefix() + p.getName() + " §7leave the game ! " + "§c(" + (Bukkit.getOnlinePlayers().size()-1) + "/" + BallsOfSteel.gameMaxplayers + ")");
+			e.setQuitMessage(Util.getGamePrefix() + p.getName() + " §7left the game ! " + "§c(" + (Bukkit.getOnlinePlayers().size()-1) + "/" + BallsOfSteel.gameMaxplayers + ")");
 		}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
 			e.setQuitMessage("");
 		}

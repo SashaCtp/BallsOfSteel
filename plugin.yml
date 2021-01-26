@@ -5,15 +5,9 @@ main: fr.rubyz.bos.BallsOfSteel
 version: 0.1
 api-version: 1.16
 commands:
-  start:
-    usage: /start
-    description: Start the game
-  param:
-    usage: /param
-    description: Open the parameters menu for the Hosts
-  gametime:
-    usage: /gametime <action> <int>
-    description: Edit the time of the game (add/remove/set)
+  game:
+    usage: /game <action> <param1> <param2>
+    description: Handle the game actions
   stats:
     usage: /stats [player]
     description: Display the user statistics (self if no playername given)
