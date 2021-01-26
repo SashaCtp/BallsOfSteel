@@ -66,6 +66,7 @@ public class GameManager {
 			pls.setGameMode(GameMode.SURVIVAL);
 			pls.setLevel(0);
 			pls.setExp(0);
+			pls.playSound(pls.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.4F, 1F);
 			Util.updateTab();
 		}
 		
@@ -76,20 +77,36 @@ public class GameManager {
 		}
 
 		// Display informations
-		
-		Bukkit.broadcastMessage("§a--------------------------------");
-		Bukkit.broadcastMessage("  §bTips : §7Global chat : §l@§7Your message");
-		Bukkit.broadcastMessage("§a--------------------------------");
-		Bukkit.broadcastMessage("       §c-=Match parameters=-");
-		
-		String space = "       ";
-		
-		if(BallsOfSteel.gameConfig.isHost())Bukkit.broadcastMessage(space + "§7- Version Host");
-		if(BallsOfSteel.gameConfig.isMidProtected())Bukkit.broadcastMessage(space + "§7- Protection du Mid active");
-		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())Bukkit.broadcastMessage(space + "§7- Blocs infinis");
-		Bukkit.broadcastMessage(space + "§7- Default block : " + BallsOfSteel.gameConfig.getBuildBlockMaterial().name());
-		Bukkit.broadcastMessage("                            ");
-		Bukkit.broadcastMessage(space + "§6§lGood luck everyone and have fun !");
+		Bukkit.getScheduler().scheduleSyncDelayedTask(BallsOfSteel.getInstance(), new Runnable(){
+
+			@Override
+			public void run() {
+
+				for(Player pls : Bukkit.getOnlinePlayers())
+					pls.playSound(pls.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.4F, 1F);
+
+				Bukkit.broadcastMessage("\n\n§7------------- [§9Tips§7] -------------");
+				Bukkit.broadcastMessage("   §fGlobal chat : §l@§f§oYour message");
+				Bukkit.broadcastMessage("§7--------------------------------\n\n");
+
+			}
+
+		}, 100);
+
+		// Display informations
+		Bukkit.getScheduler().scheduleSyncDelayedTask(BallsOfSteel.getInstance(), new Runnable(){
+
+			@Override
+			public void run() {
+
+				for(Player pls : Bukkit.getOnlinePlayers())
+					displayGameParameters(pls);
+
+			}
+
+		}, 40);
+
+		Bukkit.broadcastMessage("\n" + Util.getGamePrefix() + " Good luck everyone and have fun !\n");
 		
 	}
 	
@@ -108,7 +125,7 @@ public class GameManager {
 		if (!draw){
 			ArrayList<Team> ranking = Team.sortTeamList(BallsOfSteel.teams);
 			winningTeam = ranking.get(ranking.size() - 1);
-			kickMessage = "§f§lEnd of the match ! \n \n§7" + winningTeam.getColor() + winningTeam.getName() + " team§7 won ! §6Congratulations !\n \n §oThe server is now restarting ...";
+			kickMessage = "§f§lEnd of the match ! \n \n§7" + winningTeam.getColor() + winningTeam.getName() + " team§7 won ! §6Congratulations !\n \n §7§oThe server is now restarting ...";
 			Bukkit.broadcastMessage(winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !");
 		}else {
 			kickMessage = "§f§lEnd of the match ! \n \n§7It's a draw !\n \n §oThe server is now restarting ...";
@@ -119,12 +136,11 @@ public class GameManager {
 		for (Player pls : Bukkit.getOnlinePlayers()) {
 
 			if(winningTeam != null && winningTeam.getPlayers().contains(pls))
-				pls.sendTitle("§2§lVictory !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 70, 1);
+				pls.sendTitle("§a§lVictory !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 20*7, 1);
 			else if(winningTeam != null)
-				pls.sendTitle("§4§lDefeat !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 70, 1);
+				pls.sendTitle("§c§lDefeat !", winningTeam.getColor() + winningTeam.getName() + " team§7 won the game !", 1, 20*7, 1);
 			else
-				pls.sendTitle("§7§lDraw !", "§7Nobody won the game !", 1, 70, 1);
-
+				pls.sendTitle("§7§lDraw !", "§fNobody won the game !", 1, 20*7, 1);
 
 			pls.playSound(pls.getLocation(), Sound.ENTITY_ENDER_DRAGON_DEATH, 0.7F, 1F);
 
@@ -162,8 +178,27 @@ public class GameManager {
 					}}, 30L);
 				}
 			
-		}, 20L*30);
+		}, 20L*20);
 		
+	}
+
+	public static void displayGameParameters(Player p){
+		String space = "   ";
+
+		p.sendMessage("§7--------- [§9Game parameters§7] ---------");
+
+		if(BallsOfSteel.gameConfig.isHost())
+			p.sendMessage(space + "§f- Version : §cHost");
+		else
+			p.sendMessage(space + "§f- Version : §cClassique");
+
+		if(BallsOfSteel.gameConfig.isMidProtected())p.sendMessage(space + "§f- Protection du Mid active");
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())p.sendMessage(space + "§f- Blocs : §cInfinis");
+		p.sendMessage(space + "§f- Default block : §c" + BallsOfSteel.gameConfig.getBuildBlockMaterial().name() + "\n");
+		p.sendMessage("§7-----------------------------------\n");
+
+		p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.4F, 1F);
+
 	}
 
 	/**
@@ -190,7 +225,7 @@ public class GameManager {
 
 						for(Player pls : wt.getPlayers()){
 
-							if(pls.isOnline())
+							if(pls != null && pls.isOnline())
 								Util.spawnFirework(pls.getLocation());
 
 						}

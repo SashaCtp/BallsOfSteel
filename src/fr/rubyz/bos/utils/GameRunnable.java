@@ -31,29 +31,52 @@ public class GameRunnable extends BukkitRunnable{
 		
 		// Updating the Tab, Diamonds Indicator & remaining time
 		if(BallsOfSteel.gameState.equals(GameState.GAME)){
+
 			Util.updateTab();
 
 			for(Team t : BallsOfSteel.teams){
 				t.refreshDiamondCount();
 				t.getDiamondIndicator().update();
 			}
-			
-			BallsOfSteel.remainingTime--;
-			
-			if(BallsOfSteel.remainingTime == 1200){
-				Bukkit.broadcastMessage(Util.getGamePrefix() + "§620 minutes remaining !");
-				for(Player pls : Bukkit.getOnlinePlayers()){pls.playSound(pls.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);}
-			}else if(BallsOfSteel.remainingTime == 600){
-				Bukkit.broadcastMessage(Util.getGamePrefix() + "§610 minutes remaining !");
-				for(Player pls : Bukkit.getOnlinePlayers()){pls.playSound(pls.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);}
-			}else if(BallsOfSteel.remainingTime == 300){
-				Bukkit.broadcastMessage(Util.getGamePrefix() + "§65 minutes remaining !");
-				for(Player pls : Bukkit.getOnlinePlayers()){pls.playSound(pls.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);}
-			}else if(BallsOfSteel.remainingTime == -1){
+
+			announceRemainingTime();
+
+			if(BallsOfSteel.remainingTime == 0){
 				GameManager.stop();
+				return;
 			}
+
+			BallsOfSteel.remainingTime--;
 		}
 		
+	}
+
+	public static void announceRemainingTime(){
+
+		String message = null;
+		int min = BallsOfSteel.remainingTime/60;
+		int round = BallsOfSteel.remainingTime%60;
+
+		if((min == 20 || min == 10 || min == 5) && round == 0)
+			message = "§c" + min + " minutes§f remaining !";
+
+		if(BallsOfSteel.remainingTime == 60)
+			message = "§fThe game ends in §c1 minute§f !";
+
+		if(BallsOfSteel.remainingTime == 10 || BallsOfSteel.remainingTime == 30 || (BallsOfSteel.remainingTime <= 5 && BallsOfSteel.remainingTime > 1))
+			message = "§fThe game ends in §c" + BallsOfSteel.remainingTime + " seconds§f !";
+
+		if(BallsOfSteel.remainingTime == 1)
+			message = "§fThe game ends in §c" + BallsOfSteel.remainingTime + " second§f !";
+
+		if(message != null){
+			Bukkit.broadcastMessage(Util.getGamePrefix() + message);
+
+			for(Player pls : Bukkit.getOnlinePlayers())
+				pls.playSound(pls.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.3F, 1F);
+		}
+
+
 	}
 	
 }

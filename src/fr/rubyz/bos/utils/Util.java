@@ -30,7 +30,7 @@ public class Util {
 	
 	//Chat Util
 	
-	private static String gamePrefix = "§7[§9§lBallsOfSteel§7]§r ";
+	private static String gamePrefix = "§7[§6BallsOfSteel§7]§r ";
 	public static String getGamePrefix(){
 		return gamePrefix;
 	}

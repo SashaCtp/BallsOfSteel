@@ -82,7 +82,12 @@ public class GameCommand implements CommandExecutor {
      */
     public void gameStop(CommandSender sender, Command cmd, String label, String[] args) {
 
-        sendNoPermissionMessage(sender);
+        if(!sender.isOp()){
+            sendNoPermissionMessage(sender);
+            return;
+        }
+
+        BallsOfSteel.remainingTime = 5;
 
     }
 
@@ -159,11 +164,11 @@ public class GameCommand implements CommandExecutor {
             time = Integer.parseInt(args[2]);
 
             if(time < 0) {
-                p.sendMessage("§4Please give a positive value");
+                p.sendMessage("§cPlease give a positive value");
                 return;
             }
         }catch(Exception e){
-            p.sendMessage("§4Please give a correct value");
+            p.sendMessage("§cPlease give a correct value");
             return;
         }
 
@@ -177,7 +182,7 @@ public class GameCommand implements CommandExecutor {
                 break;
             case "remove":
                 if(time > BallsOfSteel.remainingTime)
-                    p.sendMessage("§4You can not remove more time !");
+                    p.sendMessage("§cYou can not remove more time !");
                 else
                     BallsOfSteel.remainingTime = BallsOfSteel.remainingTime - time;
                 break;
