@@ -185,7 +185,7 @@ public class GameManager {
 		
 	}
 
-	public static void displayGameParameters(Player p){
+	public static void displayGameParameters(CommandSender dest){
 
 		String space = "   ";
 		ArrayList<String> message = new ArrayList<>();
@@ -203,7 +203,7 @@ public class GameManager {
 
 		message.add(space + "§f- Default block : §c" + BallsOfSteel.gameConfig.getBuildBlockMaterial().name());
 
-		Util.sendImportantMessage("Game parameters", message, p);
+		Util.sendImportantMessage("Game parameters", message, dest);
 
 
 	}

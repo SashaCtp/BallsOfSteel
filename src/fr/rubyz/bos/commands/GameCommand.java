@@ -87,7 +87,8 @@ public class GameCommand implements CommandExecutor {
             return;
         }
 
-        BallsOfSteel.remainingTime = 5;
+        if(!BallsOfSteel.gameState.equals(GameState.GAME))
+            BallsOfSteel.remainingTime = 5;
 
     }
 
@@ -124,7 +125,8 @@ public class GameCommand implements CommandExecutor {
      */
     public void gameInfo(CommandSender sender, Command cmd, String label, String[] args) {
 
-
+        if(args.length == 0)
+            GameManager.displayGameParameters(sender);
 
     }
 
