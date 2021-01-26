@@ -1,7 +1,9 @@
 package fr.rubyz.bos;
 
+import fr.rubyz.bos.utils.Util;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -37,11 +39,12 @@ public class GameStats {
      */
     public void displayPlayerStats(Player statsPlayer, Player displayPlayer){
 
-        displayPlayer.sendMessage("§a------------- §9§lBalls Of Steel §a-------------");
-        if(displayPlayer != statsPlayer) displayPlayer.sendMessage("     §7§o" + statsPlayer.getDisplayName() + "'s statistics");
-        displayPlayer.sendMessage("     §7- Kills : §6" + this.getPlayerKills(statsPlayer));
-        displayPlayer.sendMessage("     §7- Death : §c" + this.getPlayerDeaths(statsPlayer));
-        displayPlayer.sendMessage("     §7- Diamonds mined : §b" + this.getPlayerDiamondsMined(statsPlayer));
+        ArrayList<String> message = new ArrayList<>();
+        message.add("  §7- Kills : §a" + this.getPlayerKills(statsPlayer));
+        message.add("  §7- Deaths : §a" + this.getPlayerDeaths(statsPlayer));
+        message.add("  §7- Diamonds mined : §a" + this.getPlayerDiamondsMined(statsPlayer));
+
+        Util.sendImportantMessage(statsPlayer.getDisplayName() + "'s statistics", message, displayPlayer);
 
     }
 

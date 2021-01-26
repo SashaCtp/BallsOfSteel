@@ -1,10 +1,12 @@
 package fr.rubyz.bos.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Firework;
@@ -117,6 +119,32 @@ public class Util {
 		}
 		
 	}
+
+    /**
+     *  Display an important message to a player
+     * @param title     Title of the message
+     * @param message   Array of strings, each string beeing a line
+     * @param dest      CommandSender who need to receive the message
+     */
+    public static void sendImportantMessage(String title, ArrayList<String> message, CommandSender dest){
+
+        dest.sendMessage("");
+        dest.sendMessage("§7---------- [§6" + title + "§7] ----------");
+
+        for(String s : message)
+            dest.sendMessage(s);
+
+        dest.sendMessage("§7------------------------" + "-".repeat(title.length()));
+        dest.sendMessage("");
+
+        if(dest instanceof Player) {
+
+            Player p = (Player) dest;
+            p.playSound(p.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 0.4F, 1F);
+
+        }
+
+    }
 
     /**
      * Spawn a firework on the given location

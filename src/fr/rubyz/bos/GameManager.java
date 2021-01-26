@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -82,12 +83,14 @@ public class GameManager {
 			@Override
 			public void run() {
 
-				for(Player pls : Bukkit.getOnlinePlayers())
-					pls.playSound(pls.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.4F, 1F);
+				ArrayList<String> message = new ArrayList<>();
+				message.add("  §fGlobal chat : §c@§f§oYour message");
 
-				Bukkit.broadcastMessage("\n\n§7------------- [§9Tips§7] -------------");
-				Bukkit.broadcastMessage("   §fGlobal chat : §l@§f§oYour message");
-				Bukkit.broadcastMessage("§7--------------------------------\n\n");
+				for(Player pls : Bukkit.getOnlinePlayers()){
+
+					Util.sendImportantMessage("Tips", message, (CommandSender) pls);
+
+				}
 
 			}
 
@@ -183,21 +186,25 @@ public class GameManager {
 	}
 
 	public static void displayGameParameters(Player p){
-		String space = "   ";
 
-		p.sendMessage("§7--------- [§9Game parameters§7] ---------");
+		String space = "   ";
+		ArrayList<String> message = new ArrayList<>();
 
 		if(BallsOfSteel.gameConfig.isHost())
-			p.sendMessage(space + "§f- Version : §cHost");
+			message.add(space + "§f- Version : §cHost");
 		else
-			p.sendMessage(space + "§f- Version : §cClassique");
+			message.add(space + "§f- Version : §cClassique");
 
-		if(BallsOfSteel.gameConfig.isMidProtected())p.sendMessage(space + "§f- Protection du Mid active");
-		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())p.sendMessage(space + "§f- Blocs : §cInfinis");
-		p.sendMessage(space + "§f- Default block : §c" + BallsOfSteel.gameConfig.getBuildBlockMaterial().name() + "\n");
-		p.sendMessage("§7-----------------------------------\n");
+		if(BallsOfSteel.gameConfig.isMidProtected())
+			message.add(space + "§f- Protection du Mid active");
 
-		p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.4F, 1F);
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())
+			message.add(space + "§f- Blocs : §cInfinis");
+
+		message.add(space + "§f- Default block : §c" + BallsOfSteel.gameConfig.getBuildBlockMaterial().name());
+
+		Util.sendImportantMessage("Game parameters", message, p);
+
 
 	}
 

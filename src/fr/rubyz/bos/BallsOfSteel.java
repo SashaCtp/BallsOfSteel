@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -97,25 +98,27 @@ public class BallsOfSteel extends JavaPlugin{
 			int teamMaxplayers = gameConfig.getTeamsize();
 			
 			Block redChest = w.getBlockAt(new Location(w, -212, 58, 577));
-			red = new Team("Red", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 70.3, 666, -90, 0), redChest, new Location(w, -303, 72-0.7, 672.5), "§c", Material.RED_TERRACOTTA, new Location(w, -299, 61, 661), new Location(w, -312, 80, 674));
+			red = new Team("Red", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 70.3, 666, -90, 0), redChest, new Location(w, -303, 72-1.5, 672.5), "§c", Material.RED_TERRACOTTA, new Location(w, -299, 61, 661), new Location(w, -312, 80, 674));
 			teams.add(red);
 			
 			Block blueChest = w.getBlockAt(new Location(w, -212, 58, 571));
-			blue = new Team("Blue", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 71.3, 483), blueChest, new Location(w, -120, 73-0.7, 476.5), "§3", Material.BLUE_TERRACOTTA, new Location(w, -125, 62, 487), new Location(w, -112, 81, 474));
+			blue = new Team("Blue", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 71.3, 483), blueChest, new Location(w, -120, 73-1.5, 476.5), "§3", Material.BLUE_TERRACOTTA, new Location(w, -125, 62, 487), new Location(w, -112, 81, 474));
 			teams.add(blue);
 			
 			Block yellowChest = w.getBlockAt(new Location(w, -209, 58, 574));
-			yellow = new Team("Yellow", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 70.3, 666, 180, 0), yellowChest, new Location(w, -113.5, 72-0.7, 666), "§e", Material.YELLOW_TERRACOTTA, new Location(w, -125, 61, 661), new Location(w, -112, 80, 684));
+			yellow = new Team("Yellow", new ArrayList<>(), teamMaxplayers, new Location(w, -120, 70.3, 666, 180, 0), yellowChest, new Location(w, -113.5, 72-1.5, 666), "§e", Material.YELLOW_TERRACOTTA, new Location(w, -125, 61, 661), new Location(w, -112, 80, 684));
 			teams.add(yellow);
 			
 			Block greenChest = w.getBlockAt(new Location(w, -215, 58, 574));
-			green = new Team("Green", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 72.3, 483), greenChest, new Location(w, -309.5, 74-0.7, 483), "§a", Material.GREEN_TERRACOTTA, new Location(w, -299, 63, 487), new Location(w, -312, 82, 474));
+			green = new Team("Green", new ArrayList<>(), teamMaxplayers, new Location(w, -303, 72.3, 483), greenChest, new Location(w, -309.5, 74-1.5, 483), "§a", Material.GREEN_TERRACOTTA, new Location(w, -299, 63, 487), new Location(w, -312, 82, 474));
 			teams.add(green);
-			
-			Bukkit.broadcastMessage(Util.getGamePrefix() + "Teams :");
+
+			ArrayList<String> message = new ArrayList<>();
 			for(Team t : teams)
-				Bukkit.broadcastMessage("                  " + t.getColor() + t.getName() + " team");
-			Bukkit.broadcastMessage("-----------------------------");
+				message.add(" " + t.getColor() + t.getName() + " team");
+
+			Util.sendImportantMessage("Teams", message, (CommandSender) Bukkit.getConsoleSender());
+
 		}catch(Exception e){
 			Bukkit.broadcastMessage("§c[ERROR] Error while creating the team /!\\ Check the console");
 			e.printStackTrace();
@@ -147,14 +150,14 @@ public class BallsOfSteel extends JavaPlugin{
 	@Override
 	public void onDisable(){
 		for(Player pls : Bukkit.getOnlinePlayers()){
-			pls.kickPlayer(Util.getGamePrefix() + "\n §a§lReload");
-		}
-		
-		for(Player pls : Bukkit.getOnlinePlayers()){
+
 			//Clear des teams et prefix
 			if(BallsOfSteel.getPlayerTeam(pls) != null){
 				BallsOfSteel.getPlayerTeam(pls).removePlayer(pls);
 			}
+
+			pls.kickPlayer(Util.getGamePrefix() + "\n\n §7§oServer is reloading");
+
 		}
 		
 		for(Team t : teams){
@@ -172,8 +175,6 @@ public class BallsOfSteel extends JavaPlugin{
 			}
 		}
 
-		//Stats
-		gameStats = null;
 	}
 	
 	public static void setSpectatorMode(Player p){
