@@ -52,12 +52,13 @@ public class CustomScoreboardManager implements ScoreboardManager{
 			if(line.contains(" diamonds") || line.contains(" diamond")){
 				
 				scoreboard.resetScores(line);
-				Team t = BallsOfSteel.getPlayerTeam(p);
-				if(t.getDiamonds() <= 1)
-					objective.getScore("§b" + t.getDiamonds() + " diamond").setScore(4);
-				else
-					objective.getScore("§b" + t.getDiamonds() + " diamonds").setScore(4);
-				
+				Team t = Team.getPlayerTeam(p);
+				if(t != null) {
+					if (t.getDiamonds() <= 1)
+						objective.getScore("§b" + t.getDiamonds() + " diamond").setScore(4);
+					else
+						objective.getScore("§b" + t.getDiamonds() + " diamonds").setScore(4);
+				}
 			}
 			
 		}
@@ -73,7 +74,7 @@ public class CustomScoreboardManager implements ScoreboardManager{
 		
 		if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			scoreboard.resetScores("§7Waiting for players");
-			Team t = BallsOfSteel.getPlayerTeam(p);
+			Team t = Team.getPlayerTeam(p);
 			
 			objective.getScore(" ").setScore(6);
 			objective.getScore(t.getColor() + "Team " + t.getName()).setScore(5);

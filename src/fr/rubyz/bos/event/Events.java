@@ -40,7 +40,7 @@ public class Events implements Listener {
 			}
 			
 			if(BallsOfSteel.gameState.equals(GameState.GAME)){
-				if(BallsOfSteel.getPlayerTeam(p).getBase().contains(p.getLocation())){
+				if(Team.getPlayerTeam(p).getBase().contains(p.getLocation())){
 					e.setCancelled(true);
 				}
 			}
@@ -167,11 +167,11 @@ public class Events implements Listener {
 			Player p = (Player) e.getEntity();
 			Player damager = (Player) e.getDamager();
 			
-			if(BallsOfSteel.getPlayerTeam(p) == BallsOfSteel.getPlayerTeam(damager))
+			if(Team.getPlayerTeam(p) == Team.getPlayerTeam(damager))
 				e.setCancelled(true);
 			
 			if(BallsOfSteel.gameState.equals(GameState.GAME)){
-				if(BallsOfSteel.getPlayerTeam(p).getBase().contains(p.getLocation())){
+				if(Team.getPlayerTeam(p).getBase().contains(p.getLocation())){
 					e.setCancelled(true);
 				}
 			}
@@ -185,10 +185,10 @@ public class Events implements Listener {
 		
 		Player p = e.getPlayer();
 		
-		if(BallsOfSteel.getPlayerTeam(p) == null){
+		if(Team.getPlayerTeam(p) == null){
 			e.setRespawnLocation(BallsOfSteel.getSpawn());
 		}else{
-			e.setRespawnLocation(BallsOfSteel.getPlayerTeam(p).getSpawn());
+			e.setRespawnLocation(Team.getPlayerTeam(p).getSpawn());
 		}
 		
 		GameManager.giveStuff(p);

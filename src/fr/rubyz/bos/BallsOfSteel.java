@@ -153,9 +153,9 @@ public class BallsOfSteel extends JavaPlugin{
 		for(Player pls : Bukkit.getOnlinePlayers()){
 
 			//Clear des teams et prefix
-			if(BallsOfSteel.getPlayerTeam(pls) != null){
-				BallsOfSteel.getPlayerTeam(pls).removePlayer(pls);
-			}
+			Team t = Team.getPlayerTeam(pls);
+			if(t != null)
+				t.removePlayer(pls);
 
 			pls.kickPlayer(Util.getGamePrefix() + "\n\n §7§oServer is reloading");
 
@@ -242,18 +242,6 @@ public class BallsOfSteel extends JavaPlugin{
 	
 	public static ArrayList<Team> getTeams(){
 		return teams;
-	}
-	
-	public static Team getPlayerTeam(Player p){
-		Team t = null;
-		
-		for(Team teamTest : teams){
-			if(teamTest.getPlayers().contains(p)){
-				t = teamTest;
-			}
-		}
-		
-		return t;
 	}
 	
 	public GameConfiguration getGameConfig(){

@@ -38,7 +38,7 @@ public class PlayerMove implements Listener {
 
             }else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
 
-                Team t = Team.getTeamOfPlayer(p);
+                Team t = Team.getPlayerTeam(p);
 
                 if(t == null)
                     p.teleport(BallsOfSteel.getSpawn());

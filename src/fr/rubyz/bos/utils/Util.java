@@ -95,11 +95,13 @@ public class Util {
 			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
 				state = "Waiting for players - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs";
 			}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
-				if(BallsOfSteel.getPlayerTeam(pls) != null){
-					if(BallsOfSteel.getPlayerTeam(pls).getDiamonds() <= 1){
-						state = "In game - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs - " + BallsOfSteel.getPlayerTeam(pls).getColor() + BallsOfSteel.getPlayerTeam(pls).getDiamonds() + " diamond";
+			    Team playerTeam = Team.getPlayerTeam(pls);
+
+				if(playerTeam != null){
+					if(playerTeam.getDiamonds() <= 1){
+						state = "In game - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs - " + playerTeam.getColor() + playerTeam.getDiamonds() + " diamond";
 					}else{
-						state = "In game - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs - " + BallsOfSteel.getPlayerTeam(pls).getColor() + BallsOfSteel.getPlayerTeam(pls).getDiamonds() + " diamonds";
+						state = "In game - " + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + " joueurs - " + playerTeam.getColor() + playerTeam.getDiamonds() + " diamonds";
 					}
 				}else{
 					state = "In game";

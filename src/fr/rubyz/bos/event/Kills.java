@@ -23,15 +23,15 @@ public class Kills implements Listener {
 
 			BallsOfSteel.gameStats.addKill(e.getEntity().getKiller());
 
-			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity().getKiller()).getColor() + e.getEntity().getKiller().getName() +  " §fkilled " + Team.getTeamOfPlayer(e.getEntity()).getColor() + e.getEntity().getName());
+			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity().getKiller()).getColor() + e.getEntity().getKiller().getName() +  " §fkilled " + Team.getPlayerTeam(e.getEntity()).getColor() + e.getEntity().getName());
 
 		}else if(e.getEntity().getLocation().getY() <= 0){
 
-			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f fell into the void !");
+			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f fell into the void !");
 
 		}else{
 
-			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f died !");
+			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f died !");
 
 		}
 

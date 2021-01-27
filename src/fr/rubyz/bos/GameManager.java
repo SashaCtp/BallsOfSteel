@@ -28,7 +28,7 @@ public class GameManager {
 		
 		ArrayList<Player> noTeam = new ArrayList<>();
 		for(Player pls : Bukkit.getOnlinePlayers()){
-			if(BallsOfSteel.getPlayerTeam(pls) == null){
+			if(Team.getPlayerTeam(pls) == null){
 				if(!noTeam.contains(pls)){
 					noTeam.add(pls);
 				}
@@ -285,7 +285,7 @@ public class GameManager {
 		p.getInventory().setItem(2, Util.make(Material.BOW, 1, "Bow", null));
 		p.getInventory().setItem(17, new ItemStack(Material.ARROW, 16));
 		
-		giveTeamArmor(p);
+		Team.giveTeamArmor(p);
 		
 		Bukkit.getScheduler().runTaskLater(BallsOfSteel.getInstance(), new Runnable(){
 			
@@ -299,58 +299,6 @@ public class GameManager {
 			}
 			
 		}, 10);
-	}
-	
-	//Give the correct team colored armor
-	private static void giveTeamArmor(Player p){
-		Color color = null;
-		
-		String playerTeamColor = BallsOfSteel.getPlayerTeam(p).getColor();
-
-		switch(playerTeamColor) {
-			case "§1":
-				color = Color.fromRGB(0,0,170);
-			case "§9":
-				color = Color.fromRGB(83,85,255);
-			case "§3":
-				color = Color.fromRGB(1,169,170);
-			case "§b":
-				color = Color.fromRGB(84,255,255);
-			case "§c":
-				color = Color.fromRGB(255, 80, 82);
-			case "§2":
-				color = Color.fromRGB(0, 170, 3);
-			case "§e":
-				color = Color.fromRGB(255, 254, 87);
-			case "§a":
-				color = Color.fromRGB(85, 255, 88);
-		}
-		
-	    ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
-	    LeatherArmorMeta lhelmetmeta = (LeatherArmorMeta)lhelmet.getItemMeta();
-	    assert lhelmetmeta != null;
-	    lhelmetmeta.setDisplayName("Default armor");
-	    lhelmetmeta.setColor(color);
-	    lhelmet.setItemMeta(lhelmetmeta);
-	    
-	    p.getInventory().setHelmet(lhelmet);
-	    
-	    ItemStack lchestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-	    LeatherArmorMeta lchestplatemeta = (LeatherArmorMeta)lhelmet.getItemMeta();
-	    lchestplatemeta.setDisplayName("Default armor");
-	    lchestplatemeta.setColor(color);
-	    lchestplate.setItemMeta(lchestplatemeta);
-	    
-	    p.getInventory().setChestplate(lchestplate);
-	    
-	    ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS, 1);
-	    LeatherArmorMeta lbootsmeta = (LeatherArmorMeta)lhelmet.getItemMeta();
-	    lbootsmeta.setDisplayName("Default armor");
-	    lbootsmeta.setColor(color);
-	    lboots.setItemMeta(lbootsmeta);
-	    
-	    p.getInventory().setBoots(lboots);
-		
 	}
 	
 }

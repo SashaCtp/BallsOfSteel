@@ -37,7 +37,7 @@ public class PlayerInteract implements Listener{
 					if(team.getPlayers().size() == team.getMaxplayers()){
 						p.sendMessage(Util.getGamePrefix() + "§cThis team is full !");
 					}else{
-						Team oldTeam = BallsOfSteel.getPlayerTeam(p);
+						Team oldTeam = Team.getPlayerTeam(p);
 						if(oldTeam != team){
 							if(oldTeam != null){
 								oldTeam.removePlayer(p);

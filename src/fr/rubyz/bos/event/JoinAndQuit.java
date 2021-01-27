@@ -59,7 +59,7 @@ public class JoinAndQuit implements Listener{
 			BallsOfSteel.getInstance().lobbyMenu(p);
 
 		}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
-			Team playerTeam = BallsOfSteel.getPlayerTeam(p);
+			Team playerTeam = Team.getPlayerTeam(p);
 			
 			if(playerTeam != null){
 				e.setJoinMessage(Util.getGamePrefix() + p.getName() + " §7joined the game ! " + "§c(" + Bukkit.getOnlinePlayers().size() + "/" + BallsOfSteel.gameMaxplayers + ")");
@@ -100,9 +100,9 @@ public class JoinAndQuit implements Listener{
 		p.getInventory().setArmorContents(null);
 		
 		//Clearing the team
-		if(BallsOfSteel.getPlayerTeam(p) != null){
+		if(Team.getPlayerTeam(p) != null){
 			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
-				BallsOfSteel.getPlayerTeam(p).removePlayer(p);
+				Team.getPlayerTeam(p).removePlayer(p);
 				for(Player pls : Bukkit.getOnlinePlayers()){
 					BallsOfSteel.getInstance().lobbyMenu(pls);
 				}
