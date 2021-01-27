@@ -44,13 +44,15 @@ public class PlayerInteract implements Listener{
 							}
 							
 							team.addPlayer(p);
-							
+
+							p.setPlayerListName(team.getColor() + p.getName());
+							p.setDisplayName(team.getColor() + p.getName());
 							p.sendMessage(Util.getGamePrefix() + "§oYou've just joined " + team.getColor() + team.getName() + " team");
 							p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1F, 1F);
 							
-							for(Player pls : Bukkit.getOnlinePlayers()){
-								BallsOfSteel.getInstance().lobbyMenu(pls);
-							}
+							for(Player pls : Bukkit.getOnlinePlayers())
+								BallsOfSteel.lobbyMenu(pls);
+
 						}
 					}
 			

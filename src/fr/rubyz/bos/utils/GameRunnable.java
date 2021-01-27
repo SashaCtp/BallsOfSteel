@@ -28,6 +28,30 @@ public class GameRunnable extends BukkitRunnable{
 			CustomScoreboardManager board = scoreboard.getValue();
 			board.refresh();
 		}
+
+		// Countdown in the lobby
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
+
+			boolean sufficientPlayer = (Bukkit.getOnlinePlayers().size() >= 4*2);
+
+			if(sufficientPlayer && !BallsOfSteel.lobbyCountDown.started())
+				BallsOfSteel.lobbyCountDown.start(false);
+			else if(BallsOfSteel.lobbyCountDown.started()){
+
+				if(!sufficientPlayer && !BallsOfSteel.lobbyCountDown.forceStarted())
+					BallsOfSteel.lobbyCountDown.stop(Util.getGamePrefix() + " Not enough player to launch !");
+				else if(BallsOfSteel.lobbyCountDown.finished())
+					GameManager.start();
+				else {
+
+					BallsOfSteel.lobbyCountDown.displayCountdown();
+					BallsOfSteel.lobbyCountDown.decrement();
+
+				}
+
+			}
+
+		}
 		
 		// Updating the Tab, Diamonds Indicator & remaining time
 		if(BallsOfSteel.gameState.equals(GameState.GAME)){

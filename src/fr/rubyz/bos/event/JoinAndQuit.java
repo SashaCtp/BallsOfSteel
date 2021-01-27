@@ -56,7 +56,7 @@ public class JoinAndQuit implements Listener{
 			
 			p.setGameMode(GameMode.ADVENTURE);
 			
-			BallsOfSteel.getInstance().lobbyMenu(p);
+			BallsOfSteel.lobbyMenu(p);
 
 		}else if(BallsOfSteel.gameState.equals(GameState.GAME)){
 			Team playerTeam = Team.getPlayerTeam(p);
@@ -82,30 +82,35 @@ public class JoinAndQuit implements Listener{
 	
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent e){
+
 		Player p = e.getPlayer();
 		
 		BallsOfSteel.getInstance().sb.remove(p);
-		
-		for (PotionEffect effect : p.getActivePotionEffects ()){
-			p.removePotionEffect (effect.getType ());
+
+		if(!BallsOfSteel.gameState.equals(GameState.GAME)) {
+			for (PotionEffect effect : p.getActivePotionEffects())
+				p.removePotionEffect(effect.getType());
 		}
-		
+
 		Util.updateTab();
-		if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.GAME)){
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.GAME))
 			e.setQuitMessage(Util.getGamePrefix() + p.getName() + " §7left the game ! " + "§c(" + (Bukkit.getOnlinePlayers().size()-1) + "/" + BallsOfSteel.gameMaxplayers + ")");
-		}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
+		else if(BallsOfSteel.gameState.equals(GameState.FINISH))
 			e.setQuitMessage("");
-		}
+
 		p.getInventory().clear();
 		p.getInventory().setArmorContents(null);
 		
 		//Clearing the team
-		if(Team.getPlayerTeam(p) != null){
+		Team playerTeam = Team.getPlayerTeam(p);
+		if(playerTeam != null){
 			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
-				Team.getPlayerTeam(p).removePlayer(p);
-				for(Player pls : Bukkit.getOnlinePlayers()){
-					BallsOfSteel.getInstance().lobbyMenu(pls);
-				}
+
+				playerTeam.removePlayer(p);
+
+				for(Player pls : Bukkit.getOnlinePlayers())
+					BallsOfSteel.lobbyMenu(pls);
+
 			}
 		}
 		

@@ -48,6 +48,8 @@ public class BallsOfSteel extends JavaPlugin{
 	public static int gameMaxplayers;
 	public static int clockTask;
 	public static int remainingTime;
+
+	public static LobbyCountdown lobbyCountDown;
 	
 	@Override
 	public void onEnable(){
@@ -80,6 +82,7 @@ public class BallsOfSteel extends JavaPlugin{
 		gameConfig = new GameConfiguration(0, false, 0, Material.DIRT);
 		gameMaxplayers = gameConfig.getTeamsize()*4;
 		remainingTime = gameConfig.getTime()*60;
+		lobbyCountDown = new LobbyCountdown(60);
 
 		ArrayList<String> msg = new ArrayList<>();
 		msg.add("  Host : " + gameConfig.isHost());
@@ -192,7 +195,7 @@ public class BallsOfSteel extends JavaPlugin{
 		p.teleport(p1);
 	}
 	
-	public void lobbyMenu(Player p){
+	public static void lobbyMenu(Player p){
 		
 		for(int i = 0; i < BallsOfSteel.getTeams().size(); i++){
 			Team team = BallsOfSteel.getTeams().get(i);

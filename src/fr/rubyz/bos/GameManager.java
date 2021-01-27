@@ -19,6 +19,8 @@ import fr.rubyz.bos.scoreboard.CustomScoreboardManager;
 import fr.rubyz.bos.utils.Util;
 import org.bukkit.util.Vector;
 
+import javax.naming.InitialContext;
+
 public class GameManager {
 
 	// Function to start the game
@@ -67,6 +69,8 @@ public class GameManager {
 			pls.setGameMode(GameMode.SURVIVAL);
 			pls.setLevel(0);
 			pls.setExp(0);
+			pls.sendTitle("", "§6Good luck and have fun !", 50, 8, 8);
+			pls.playSound(pls.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 0.4F, 1F);
 			pls.playSound(pls.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.4F, 1F);
 			Util.updateTab();
 		}

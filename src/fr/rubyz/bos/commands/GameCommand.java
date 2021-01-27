@@ -67,7 +67,7 @@ public class GameCommand implements CommandExecutor {
 
         if(sender.isOp()){
 
-            GameManager.start();
+            BallsOfSteel.lobbyCountDown.start(true);
 
         }else{
 
