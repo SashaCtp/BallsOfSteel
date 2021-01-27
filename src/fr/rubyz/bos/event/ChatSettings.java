@@ -19,35 +19,51 @@ public class ChatSettings implements Listener{
 		e.setCancelled(true);
 		
 		String message = e.getMessage();
+		String color = "";
+		Team t = Team.getPlayerTeam(p);
+		if(t != null)
+			color = t.getColor();
 		
 		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
-			String color = "";
-			if(BallsOfSteel.getPlayerTeam(p) != null){
-				color = BallsOfSteel.getPlayerTeam(p).getColor();
-			}
-			
+
 			String newMsg = "<" + color + p.getName() + "§r> " + message;
 			Bukkit.broadcastMessage(newMsg);
+
 		}else{
-			if(message.startsWith("@")){
-				//Send the message to the general chat
-				
-				String color = "";
-				if(BallsOfSteel.getPlayerTeam(p) != null){
-					color = BallsOfSteel.getPlayerTeam(p).getColor();
-				}
-				
-				String newMsg = color + "(Global) " + p.getName() + " : §r" + message.substring(1);
-				Bukkit.broadcastMessage(newMsg);
+
+			// If spectator
+			if(BallsOfSteel.spectator.contains(p) || t == null) {
+
+				String newMsg =  "§7(Spec) " + p.getName() + " : §7§o" + message.substring(1);
+
+				if(BallsOfSteel.gameState.equals(GameState.GAME)) {
+					for (Player spec : BallsOfSteel.spectator)
+						spec.sendMessage(newMsg);
+
+					System.out.println(newMsg);
+				}else
+					Bukkit.broadcastMessage(newMsg);
+
 			}else{
-				//Send the message to the team chat
-				Team playerTeam = BallsOfSteel.getPlayerTeam(p);
-				
-				String color = playerTeam.getColor();
-				
-				String newMsg = color + "(Team) " + p.getName() + " : §r" + message;
-				for(Player pls : playerTeam.getPlayers()){pls.sendMessage(newMsg);}
-				System.out.println(newMsg);
+				if (message.startsWith("@")) {
+
+					//Send the message to the general chat
+
+					String newMsg = color + "(Global) " + p.getName() + " : §r" + message.substring(1);
+					Bukkit.broadcastMessage(newMsg);
+
+				} else {
+
+					//Send the message to the team chat
+
+					String newMsg = color + "(Team) " + p.getName() + " : §r" + message;
+
+					for (Player pls : t.getPlayers())
+						pls.sendMessage(newMsg);
+
+					System.out.println(newMsg);
+
+				}
 			}
 		}
 		
