@@ -17,6 +17,7 @@ public class EventManager implements Listener{
 		pm.registerEvents(new ParamInventoryEvent(), pl);
 		pm.registerEvents(new ChatSettings(), pl);
 		pm.registerEvents(new PlayerInteract(), pl);
+		pm.registerEvents(new PlayerMove(), pl);
 		pm.registerEvents(new Weather(), pl);
 	}
 	

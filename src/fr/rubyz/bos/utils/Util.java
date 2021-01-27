@@ -129,7 +129,7 @@ public class Util {
     public static void sendImportantMessage(String title, ArrayList<String> message, CommandSender dest){
 
         dest.sendMessage("");
-        dest.sendMessage("§7---------- [§6" + title + "§7] ----------");
+        dest.sendMessage("§7----------- [§6" + title + "§7] -----------");
 
         for(String s : message)
             dest.sendMessage(s);

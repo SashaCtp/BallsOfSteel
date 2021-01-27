@@ -27,23 +27,6 @@ import fr.rubyz.bos.Team;
 import fr.rubyz.bos.utils.Util;
 
 public class Events implements Listener {
-
-	@EventHandler
-	public void onPlayerMoveEvent(PlayerMoveEvent e){
-		
-		Player p = e.getPlayer();
-		
-		if((BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.FINISH)) && p.getFoodLevel() < 20)
-			p.setFoodLevel(20);
-			
-		if(p.getLocation().getX() > -197 || p.getLocation().getY() < 0 || p.getLocation().getY() > 216 || p.getLocation().getX() < -227 || p.getLocation().getZ() > 589 || p.getLocation().getZ() < 559){
-			if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
-				p.teleport(BallsOfSteel.getSpawn());
-				p.playSound(p.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1F, 1F);
-			}
-		}
-		
-	}
 	
 	@EventHandler
 	public void onEntityDamageEvent(EntityDamageEvent e){

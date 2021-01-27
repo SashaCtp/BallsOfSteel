@@ -1,6 +1,7 @@
 package fr.rubyz.bos;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -228,7 +229,7 @@ public class Team {
 	 * @return Location of the spawn
 	 */
 	public Location getSpawn() {
-		return spawn;
+		return this.spawn;
 	}
 
 	/**
@@ -288,7 +289,7 @@ public class Team {
 		assert(this.spawn != null);
 
 		for(UUID uuid : this.players){
-			Bukkit.getServer().getPlayer(uuid).teleport(this.spawn);
+			Objects.requireNonNull(Bukkit.getPlayer(uuid)).teleport(this.spawn);
 		}
 
 	}

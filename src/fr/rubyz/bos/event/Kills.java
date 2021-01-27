@@ -10,6 +10,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import fr.rubyz.bos.BallsOfSteel;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import java.util.Objects;
+
 public class Kills implements Listener {
 
 	@EventHandler
@@ -21,35 +23,17 @@ public class Kills implements Listener {
 
 			BallsOfSteel.gameStats.addKill(e.getEntity().getKiller());
 
-		}
+			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity().getKiller()).getColor() + e.getEntity().getKiller().getName() +  " §fkilled " + Team.getTeamOfPlayer(e.getEntity()).getColor() + e.getEntity().getName());
 
-	}
+		}else if(e.getEntity().getLocation().getY() <= 0){
 
-	@EventHandler
-	public void onMove(PlayerMoveEvent e){
+			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f fell into the void !");
 
-		Player p = e.getPlayer();
+		}else{
 
-		if(p.getLocation().getY() <= 0){
-
-			if(BallsOfSteel.gameState.equals(GameState.GAME)){
-
-				p.setHealth(0);
-
-			}else if(BallsOfSteel.gameState.equals(GameState.FINISH)){
-
-				Team t = Team.getTeamOfPlayer(p);
-
-				if(t == null)
-					p.teleport(BallsOfSteel.getSpawn());
-				else
-					p.teleport(t.getSpawn());
-
-			}
+			e.setDeathMessage("> " + Team.getTeamOfPlayer(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f died !");
 
 		}
-
-
 
 	}
 
