@@ -80,13 +80,14 @@ public class BallsOfSteel extends JavaPlugin{
 		gameConfig = new GameConfiguration(0, false, 0, Material.DIRT);
 		gameMaxplayers = gameConfig.getTeamsize()*4;
 		remainingTime = gameConfig.getTime()*60;
-		
-		Bukkit.getConsoleSender().sendMessage(Util.getGamePrefix() + "Variables : ");
-		Bukkit.getConsoleSender().sendMessage("                  " + "Host : " + gameConfig.isHost());
-		Bukkit.getConsoleSender().sendMessage("                  " + "Team size : " + gameConfig.getTeamsize() + " players");
-		Bukkit.getConsoleSender().sendMessage("                  " + "Match lenght : " + gameConfig.getTime() + " minuts");
-		Bukkit.getConsoleSender().sendMessage("                  " + "Infinite blocks : " + gameConfig.isInfiniteBuildBlock());
-		Bukkit.getConsoleSender().sendMessage("-----------------------------");
+
+		ArrayList<String> msg = new ArrayList<>();
+		msg.add("  Host : " + gameConfig.isHost());
+		msg.add("  Team size : " + gameConfig.getTeamsize() + " players");
+		msg.add("  Match lenght : " + gameConfig.getTime() + " minutes");
+		msg.add("  Infinite blocks : " + gameConfig.isInfiniteBuildBlock());
+		Util.sendImportantMessage("Variables", msg, Bukkit.getConsoleSender());
+		msg = null;
 
 		//Commands
 		Objects.requireNonNull(getCommand("game")).setExecutor(new GameCommand());

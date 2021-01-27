@@ -87,7 +87,7 @@ public class GameCommand implements CommandExecutor {
             return;
         }
 
-        if(!BallsOfSteel.gameState.equals(GameState.GAME))
+        if(BallsOfSteel.gameState.equals(GameState.GAME))
             BallsOfSteel.remainingTime = 5;
 
     }
