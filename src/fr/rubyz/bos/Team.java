@@ -183,26 +183,22 @@ public class Team {
 	 */
 	public static void giveTeamArmor(Player p){
 		Color color = null;
+		Team playerTeam = getPlayerTeam(p);
 
-		String playerTeamColor = getPlayerTeam(p).getColor();
+		if(playerTeam == null)
+			return;
 
-		switch(playerTeamColor) {
-			case "§1":
-				color = Color.fromRGB(0,0,170);
-			case "§9":
-				color = Color.fromRGB(83,85,255);
-			case "§3":
-				color = Color.fromRGB(1,169,170);
-			case "§b":
-				color = Color.fromRGB(84,255,255);
-			case "§c":
-				color = Color.fromRGB(255, 80, 82);
-			case "§2":
-				color = Color.fromRGB(0, 170, 3);
-			case "§e":
-				color = Color.fromRGB(255, 254, 87);
-			case "§a":
-				color = Color.fromRGB(85, 255, 88);
+		String playerTeamColor = playerTeam.getColor();
+
+		switch (playerTeamColor) {
+			case "§1" -> color = Color.fromRGB(0, 0, 170);
+			case "§9" -> color = Color.fromRGB(83, 85, 255);
+			case "§3" -> color = Color.fromRGB(1, 169, 170);
+			case "§b" -> color = Color.fromRGB(84, 255, 255);
+			case "§c" -> color = Color.fromRGB(255, 80, 82);
+			case "§2" -> color = Color.fromRGB(0, 170, 3);
+			case "§e" -> color = Color.fromRGB(255, 254, 87);
+			case "§a" -> color = Color.fromRGB(85, 255, 88);
 		}
 
 		ItemStack lhelmet = new ItemStack(Material.LEATHER_HELMET, 1);
@@ -212,15 +208,11 @@ public class Team {
 		lhelmetmeta.setColor(color);
 		lhelmet.setItemMeta(lhelmetmeta);
 
-		p.getInventory().setHelmet(lhelmet);
-
 		ItemStack lchestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 		LeatherArmorMeta lchestplatemeta = (LeatherArmorMeta)lhelmet.getItemMeta();
 		lchestplatemeta.setDisplayName("Default armor");
 		lchestplatemeta.setColor(color);
 		lchestplate.setItemMeta(lchestplatemeta);
-
-		p.getInventory().setChestplate(lchestplate);
 
 		ItemStack lboots = new ItemStack(Material.LEATHER_BOOTS, 1);
 		LeatherArmorMeta lbootsmeta = (LeatherArmorMeta)lhelmet.getItemMeta();
@@ -228,6 +220,8 @@ public class Team {
 		lbootsmeta.setColor(color);
 		lboots.setItemMeta(lbootsmeta);
 
+		p.getInventory().setHelmet(lhelmet);
+		p.getInventory().setChestplate(lchestplate);
 		p.getInventory().setBoots(lboots);
 
 	}
