@@ -1,14 +1,11 @@
 package fr.rubyz.bos.event;
 
-import fr.rubyz.bos.GameState;
 import fr.rubyz.bos.Team;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import fr.rubyz.bos.BallsOfSteel;
-import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.Objects;
 
@@ -19,19 +16,32 @@ public class Kills implements Listener {
 
 		BallsOfSteel.gameStats.addDeath(e.getEntity());
 
+		String playerColor = "";
+		Team t = Team.getPlayerTeam(e.getEntity().getPlayer());
+
+		if(t != null)
+			playerColor = t.getColor();
+
 		if (e.getEntity().getKiller() != null) {
 
 			BallsOfSteel.gameStats.addKill(e.getEntity().getKiller());
 
-			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity().getKiller()).getColor() + e.getEntity().getKiller().getName() +  " §fkilled " + Team.getPlayerTeam(e.getEntity()).getColor() + e.getEntity().getName());
+			String killerColor = "";
+			Team tk = Team.getPlayerTeam(e.getEntity().getPlayer());
+
+			if(tk != null)
+				killerColor = tk.getColor();
+
+
+			e.setDeathMessage("> " + killerColor + e.getEntity().getKiller().getName() +  " §fkilled " + playerColor + e.getEntity().getName());
 
 		}else if(e.getEntity().getLocation().getY() <= 0){
 
-			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f fell into the void !");
+			e.setDeathMessage("> " + playerColor + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f fell into the void !");
 
 		}else{
 
-			e.setDeathMessage("> " + Team.getPlayerTeam(e.getEntity()).getColor() + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f died !");
+			e.setDeathMessage("> " + playerColor + Objects.requireNonNull(e.getEntity().getPlayer()).getName() + "§f died !");
 
 		}
 

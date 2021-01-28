@@ -64,10 +64,11 @@ public class PlayerInteract implements Listener{
 			
 			Block block = e.getClickedBlock();
 			
-			if(block.getType().equals(Material.CHEST) || 
+			if(block != null && (
+				block.getType().equals(Material.CHEST) ||
 				block.getType().equals(Material.TRAPPED_CHEST) || 
 				block.getType().equals(Material.ENCHANTING_TABLE) ||
-				block.getType().equals(Material.ANVIL)){
+				block.getType().equals(Material.ANVIL))){
 			
 				Team chestTeam = Team.getTeamChest(block);
 				
