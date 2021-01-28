@@ -1,12 +1,6 @@
 package fr.rubyz.bos.event;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -18,7 +12,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import fr.rubyz.bos.BallsOfSteel;
@@ -26,9 +19,6 @@ import fr.rubyz.bos.GameManager;
 import fr.rubyz.bos.GameState;
 import fr.rubyz.bos.Team;
 import fr.rubyz.bos.utils.Util;
-import org.bukkit.inventory.ItemStack;
-
-import javax.swing.*;
 
 public class Events implements Listener {
 	
@@ -39,15 +29,14 @@ public class Events implements Listener {
 		if(ent instanceof Player){
 			
 			Player p = (Player) e.getEntity();
-			if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.FINISH)){
+
+			if(BallsOfSteel.gameState.equals(GameState.LOBBY) || BallsOfSteel.gameState.equals(GameState.FINISH))
 				e.setCancelled(true);
-			}
-			
-			if(BallsOfSteel.gameState.equals(GameState.GAME)){
-				if(Team.getPlayerTeam(p).getBase().contains(p.getLocation())){
-					e.setCancelled(true);
-				}
-			}
+
+			Team playerTeam = Team.getPlayerTeam(p);
+
+			if (playerTeam != null && playerTeam.getBase().contains(p.getLocation()))
+				e.setCancelled(true);
 			
 		}
 	}
@@ -158,9 +147,12 @@ public class Events implements Listener {
 				e.setCancelled(true);
 			
 			if(BallsOfSteel.gameState.equals(GameState.GAME)){
-				if(Team.getPlayerTeam(p).getBase().contains(p.getLocation())){
-					e.setCancelled(true);
-				}
+
+				Team playerTeam = Team.getPlayerTeam(p);
+
+					if (playerTeam != null && playerTeam.getBase().contains(p.getLocation()))
+						e.setCancelled(true);
+
 			}
 			
 		}
@@ -171,13 +163,13 @@ public class Events implements Listener {
 	public void onPlayerRespawnEvent(PlayerRespawnEvent e){
 		
 		Player p = e.getPlayer();
-		
-		if(Team.getPlayerTeam(p) == null){
+		Team playerTeam = Team.getPlayerTeam(p);
+
+		if(playerTeam == null)
 			e.setRespawnLocation(BallsOfSteel.getSpawn());
-		}else{
-			e.setRespawnLocation(Team.getPlayerTeam(p).getSpawn());
-		}
-		
+		else
+			e.setRespawnLocation(playerTeam.getSpawn());
+
 		GameManager.giveStuff(p);
 		
 	}
