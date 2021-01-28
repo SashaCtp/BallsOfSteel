@@ -1,10 +1,7 @@
 package fr.rubyz.bos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -273,16 +270,15 @@ public class GameManager {
 		
 		Material mat = BallsOfSteel.gameConfig.getBuildBlockMaterial();
 		
-		p.getInventory().setItem(1, Util.make(Material.IRON_SWORD, 1, null, Arrays.asList("§7  Default Sword")));
+		p.getInventory().setItem(1, Util.make(Material.IRON_SWORD, 1, null, Collections.singletonList("§7  Default Sword")));
 		p.getInventory().setItem(4, Util.make(Material.IRON_PICKAXE, 1, null, null));
 		p.getInventory().setItem(5, Util.make(Material.IRON_SHOVEL, 1, null, null));
 		p.getInventory().setItem(6, Util.make(Material.IRON_AXE, 1, null, null));
 		
-		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock()){
-			p.getInventory().setItem(0, Util.make(mat, 1, "§oInfinite block", null));
-		}else{
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())
+			p.getInventory().setItem(0, Util.getInfiniteItem());
+		else
 			p.getInventory().setItem(0, Util.make(mat, 64, "Construction block", null));
-		}
 		
 		p.getInventory().setItem(3, new ItemStack(Material.COOKED_BEEF, 16));
 		

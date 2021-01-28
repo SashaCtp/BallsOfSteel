@@ -1,6 +1,7 @@
 package fr.rubyz.bos.event;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -25,6 +26,9 @@ import fr.rubyz.bos.GameManager;
 import fr.rubyz.bos.GameState;
 import fr.rubyz.bos.Team;
 import fr.rubyz.bos.utils.Util;
+import org.bukkit.inventory.ItemStack;
+
+import javax.swing.*;
 
 public class Events implements Listener {
 	
@@ -51,15 +55,10 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerDropItemEvent(PlayerDropItemEvent e){
 		
-		if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
-			
+		if(BallsOfSteel.gameState.equals(GameState.LOBBY)
+			|| (BallsOfSteel.gameConfig.isInfiniteBuildBlock() && Util.isTheInfiniteBlock(e.getItemDrop().getItemStack())))
 			e.setCancelled(true);
-			
-		}else if(e.getItemDrop().getItemStack().equals(Util.make(BallsOfSteel.gameConfig.getBuildBlockMaterial(), 1, "Bloc §oIllimité", null))){
-			if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())
-				e.setCancelled(true);
-		}
-		
+
 	}
 
 	@EventHandler
@@ -77,16 +76,7 @@ public class Events implements Listener {
 				}
 				
 			}
-			
-			if(e.getCurrentItem().getType().equals(BallsOfSteel.gameConfig.getBuildBlockMaterial())){
-				if(BallsOfSteel.gameState.equals(GameState.GAME)){
-					if(BallsOfSteel.gameConfig.isInfiniteBuildBlock()){
-						if(e.getCurrentItem().getItemMeta().getDisplayName().equals("§oInfinite block")){
-							e.setCancelled(true);
-						}
-					}
-				}
-			}
+
 		}
 		
 	}
@@ -109,12 +99,9 @@ public class Events implements Listener {
 		
 		if(b.getLocation().getY() >= 208)
 			e.setCancelled(true);
-		
-		if(b.getType().equals(BallsOfSteel.gameConfig.getBuildBlockMaterial())){
-			if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())
-				p.getInventory().setItem(0, Util.make(BallsOfSteel.gameConfig.getBuildBlockMaterial(), 1, null, Arrays.asList("§7Infinite block")));
-			
-		}
+
+		if(BallsOfSteel.gameConfig.isInfiniteBuildBlock() && Util.isTheInfiniteBlock(e.getItemInHand()))
+				p.getInventory().setItem(e.getHand(), Util.getInfiniteItem());
 		
 		for(Team t : BallsOfSteel.teams){
 			if(t.getBase().contains(b.getLocation())){

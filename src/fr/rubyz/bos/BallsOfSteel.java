@@ -63,6 +63,7 @@ public class BallsOfSteel extends JavaPlugin{
 		instance = this;
 
 		World w = Bukkit.getWorlds().get(0);
+		w.setAutoSave(false);
 
 		EventManager.registerEvents(this);
 
@@ -129,8 +130,6 @@ public class BallsOfSteel extends JavaPlugin{
 		}
 
 		Util.updateTab();
-		
-		Bukkit.getWorlds().get(0).setAutoSave(false);
 
 		//Runnable
 		new GameRunnable().runTaskTimer(this, 0L, 20L);
@@ -170,13 +169,6 @@ public class BallsOfSteel extends JavaPlugin{
 			Chest teamChest = (Chest) t.getChest().getState();
 			teamChest.getInventory().clear();
 			t.getDiamondIndicator().remove();
-		}
-		
-		for(World worlds : Bukkit.getWorlds()){
-			File folder = new File(worlds.getWorldFolder(), "playerdata");
-			for(File files : Objects.requireNonNull(folder.listFiles())){
-				files.delete();
-			}
 		}
 
 	}

@@ -1,9 +1,6 @@
 package fr.rubyz.bos.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
@@ -82,8 +79,41 @@ public class Util {
 		PacketPlayOutTitle p = new PacketPlayOutTitle(EnumTitleAction.TIMES, null, 20, ticks, 20);
 		((CraftPlayer) player).getHandle().playerConnection.sendPacket(p);
 	}
+
+	// Infinite Block functions ============----------
+
+    /**
+     * Make the infinite item if infinite option is on
+     * @return Infinite item
+     */
+    public static ItemStack getInfiniteItem(){
+        if(BallsOfSteel.gameConfig.isInfiniteBuildBlock())
+            return Util.make(BallsOfSteel.gameConfig.getBuildBlockMaterial(), 1, null, Collections.singletonList("§7Infinite block"));
+        else
+            return null;
+    }
+
+    /**
+     * Checks if the ItemStack is the infinite construction block
+     * @param itemStack Item to verify
+     * @return boolean
+     */
+	public static boolean isTheInfiniteBlock(ItemStack itemStack){
+
+	    if(!itemStack.getType().equals(BallsOfSteel.gameConfig.getBuildBlockMaterial()))
+	        return false;
+
+	    if(itemStack.getItemMeta() == null)
+            return false;
+
+	    if(itemStack.getItemMeta().getLore() == null)
+	        return false;
+
+        return itemStack.getItemMeta().getLore().contains("§7Infinite block");
+
+    }
 	
-	//Tab Util
+	// Tab Util ============----------
 	
 	public static void updateTab(){
 		
