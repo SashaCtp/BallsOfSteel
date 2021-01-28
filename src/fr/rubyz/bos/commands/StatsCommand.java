@@ -18,9 +18,14 @@ public class StatsCommand implements CommandExecutor {
         // Display the sender's statistics
         if(args.length == 0){
 
+            if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
+                sender.sendMessage("§cThe game hasn't started yet !");
+                return true;
+            }
+
             if(!(sender instanceof Player)){
                 sender.sendMessage("§cThe console is not a player !");
-                return false;
+                return true;
             }
 
             BallsOfSteel.gameStats.displayPlayerStats((Player) sender, (Player) sender);
@@ -30,7 +35,12 @@ public class StatsCommand implements CommandExecutor {
 
             if(!sender.isOp()){
                 sender.sendMessage("§cYou must be op to use this command !");
-                return false;
+                return true;
+            }
+
+            if(BallsOfSteel.gameState.equals(GameState.LOBBY)){
+                sender.sendMessage("§cThe game hasn't started yet !");
+                return true;
             }
 
             try{
@@ -41,7 +51,7 @@ public class StatsCommand implements CommandExecutor {
 
             }catch (Exception e){
                 sender.sendMessage("§cThe given player is not connected on the server !");
-                return false;
+                return true;
             }
 
         }else{
