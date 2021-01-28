@@ -10,30 +10,22 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class GameCommand implements CommandExecutor {
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        switch (args[0]){
-
-            case "start":
-                gameStart(sender, cmd, label, args);
-                break;
-            case "stop":
-                gameStop(sender, cmd, label, args);
-                break;
-            case "param":
-                gameParam(sender, cmd, label, args);
-                break;
-            case "time":
-                gameTime(sender, cmd, label, args);
-                break;
-            default:
-                sendCommandHelp(sender);
-                break;
-
+        switch (args[0]) {
+            case "start" -> gameStart(sender, args);
+            case "stop" -> gameStop(sender, args);
+            case "param" -> gameParam(sender, args);
+            case "info" -> gameInfo(sender, args);
+            case "time" -> gameTime(sender, args);
+            default -> sendCommandHelp(sender);
         }
 
         return true;
@@ -45,6 +37,16 @@ public class GameCommand implements CommandExecutor {
      * @param sender Sender command's sender
      */
     public void sendCommandHelp(CommandSender sender){
+
+        ArrayList<String> message = new ArrayList<>();
+        if(sender.isOp()) message.add(" /game start : §oForce start the game");
+        if(sender.isOp()) message.add(" /game stop : §oStops the game");
+        if (BallsOfSteel.gameConfig.isHost() && sender.isOp())
+                message.add(" /game param : §oOpen the Host parameters menu");
+        if(sender.isOp()) message.add(" /game time <add/remove/set> <time (sec)> : §oHandle the game timer");
+        message.add(" /game info : §oDisplay informations about the game");
+
+        Util.sendImportantMessage("Game commands", message, sender);
 
     }
 
@@ -63,27 +65,34 @@ public class GameCommand implements CommandExecutor {
     /**
      * Pause the game
      */
-    public void gameStart(CommandSender sender, Command cmd, String label, String[] args) {
+    public void gameStart(CommandSender sender, String[] args) {
 
-        if(sender.isOp()){
-
-            BallsOfSteel.lobbyCountDown.start(true);
-
-        }else{
-
+        if(!sender.isOp()){
             sendNoPermissionMessage(sender);
-
+            return;
         }
+
+        if(args.length != 0){
+            sendCommandHelp(sender);
+            return;
+        }
+
+        BallsOfSteel.lobbyCountDown.start(true);
 
     }
 
     /**
      * Stop the game
      */
-    public void gameStop(CommandSender sender, Command cmd, String label, String[] args) {
+    public void gameStop(CommandSender sender, String[] args) {
 
         if(!sender.isOp()){
             sendNoPermissionMessage(sender);
+            return;
+        }
+
+        if(args.length != 0){
+            sendCommandHelp(sender);
             return;
         }
 
@@ -95,13 +104,18 @@ public class GameCommand implements CommandExecutor {
     /**
      * Open the parameters menu
      */
-    public void gameParam(CommandSender sender, Command cmd, String label, String[] args){
+    public void gameParam(CommandSender sender, String[] args){
 
         if(!(sender instanceof Player))
             return;
 
         if(!sender.isOp()){
             sendNoPermissionMessage(sender);
+            return;
+        }
+
+        if(args.length != 0){
+            sendCommandHelp(sender);
             return;
         }
 
@@ -123,10 +137,12 @@ public class GameCommand implements CommandExecutor {
     /**
      * Learn about the current game parameters
      */
-    public void gameInfo(CommandSender sender, Command cmd, String label, String[] args) {
+    public void gameInfo(CommandSender sender, String[] args) {
 
         if(args.length == 0)
             GameManager.displayGameParameters(sender);
+        else
+            sender.sendMessage("§cUsage : /game info");
 
     }
 
@@ -135,7 +151,7 @@ public class GameCommand implements CommandExecutor {
      *
      * The command looks like that : /game time add/remove/set value
      */
-    public void gameTime(CommandSender sender, Command cmd, String label, String[] args) {
+    public void gameTime(CommandSender sender, String[] args) {
 
         if(!(sender instanceof Player))
             return;
@@ -160,7 +176,7 @@ public class GameCommand implements CommandExecutor {
         }
 
         // Time parsing
-        int time = 0;
+        int time;
 
         try{
             time = Integer.parseInt(args[2]);
